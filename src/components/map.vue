@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <l-map id="vuemap" :zoom="zoom" :center="center">
+  <div class="baladeMap">
+                <l-map id="vuemap" :zoom="zoom" :center="center">
                     <l-tile-layer :url="url"></l-tile-layer>
                     <l-polyline :lat-lngs="polyline.latlngs"
                                 :color="polyline.color" />
@@ -10,12 +10,13 @@
                     <marker-popup v-for="(marker,i) in markerList" :key="i"
                                   :position="formated(marker.coord)"
                                   :text="marker.text"
-                                  :icontest="marker.category" />
+                                  :icontest="marker.category" 
+                                  />
                     <l-control>
                         <div @click="increaseCenter" class="localisationButton"><img src="../img/target-me.svg" /></div>
                     </l-control>
                 </l-map>
-  </div>
+            </div>
 </template>
 
 
@@ -24,7 +25,7 @@
   import {LMap, LTileLayer, LMarker, LPolyline, LControl} from 'vue2-leaflet'
   import MarkerPopup from "./MarkerPopup";
   import { latLng } from "leaflet";
-  import { mapActions, mapGetters } from 'vuex'
+    import {mapActions, mapGetters} from 'vuex'
 
   export default {
     name: 'Map',
@@ -86,8 +87,7 @@
             return latLng(coords)
         },
         increaseCenter() {
-            this.center = [this.center[0] + 0.0001, this.center[1] + 0.0001]
-            //console.log(this.center)
+            this.center = [this.center[0] + 0.000000000001, this.center[1] + 0.000000000001]
         },  
         trackPosition() {
             if (navigator.geolocation) {
@@ -96,43 +96,17 @@
                 maximumAge: 0,
                 })
             } 
-            else {
+            /*else {
             alert(`Browser doesn't support Geolocation`)
-            }
-        },
-        successPosition: function(position) {
-            this.center = [position.coords.latitude, position.coords.longitude]
-            //console.log(this.center)
-        },
-        failurePosition: function(err) {
-            alert('Error Code: ' + err.code + ' Error Message: ' + err.message)
-        },
-
-        formated(coords) {
-            return latLng(coords)
-        },
-        increaseCenter() {
-            this.center = [this.center[0] + 0.0001, this.center[1] + 0.0001]
-            //console.log(this.center)
-        },
-        trackPosition() {
-            if (navigator.geolocation) {
-                navigator.geolocation.watchPosition(this.successPosition, this.failurePosition, {
-                    enableHighAccuracy: true,
-                    timeout: 15000,
-                    maximumAge: 0,
-                })
-            }
-            else {
-                alert(`Browser doesn't support Geolocation`)
-            }
+            }*/
         },
         successPosition: function (position) {
             this.center = [position.coords.latitude, position.coords.longitude]
             //console.log(this.center)
         },
         failurePosition: function (err) {
-            alert('Error Code: ' + err.code + ' Error Message: ' + err.message)
+            //alert('Error Code: ' + err.code + ' Error Message: ' + err.message)
+            console.log(" ")
         },
         addMarkerLocation() {
             let self = this
@@ -165,7 +139,7 @@
               catIcon = 'https://firebasestorage.googleapis.com/v0/b/patrimoine-pontault-combault.appspot.com/o/app%2Fmarkers%2Fmarker-parc.svg?alt=media&token=d6632431-5d31-4584-9071-b129b9f710b4'
               catColor = "#d9d217"
             }
-            let textContent = "<div class='popupTitle' style='color:"+catColor+";'><b>"+name.name+"</b></div>"+"<div class='text-center'><img class='popupImage' src='"+name.photos+"' alt='err'></div>"
+            let textContent = "<div class='popupTitle' style='color:"+catColor+";'><b>"+name.name+"</b></div>"
                         
                         if (name.gps) {
                                 
@@ -174,9 +148,7 @@
                                         
                                         self.markerList.push({ coord: name.gps, text: textContent, category: catIcon })
                                     }
-                                }
-                       console.log(self.markerList)
-                            
+                                }                            
                         }
                     });
                 });

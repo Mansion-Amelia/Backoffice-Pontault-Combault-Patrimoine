@@ -26,7 +26,7 @@ import ListeBackoffice from '../components/ListeBackoffice'
 	  FormDeleteWalk,
     ListeBackoffice,
     FormChangeLocation,
-    FormChangeWalk
+    FormChangeWalk,
   },
   data() {
     return {

@@ -5,7 +5,8 @@
     :draggable="false"
   >
     <l-icon :icon-url="icontest"  />
-    <l-popup :content="text" />
+      <l-popup ><div v-html="text"></div></l-popup>
+
   </l-marker>
 </template>
 

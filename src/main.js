@@ -4,7 +4,6 @@ import "./plugins/vue2-leaflet";
 import BootstrapVue from 'bootstrap-vue/dist/bootstrap-vue.esm';
 import Vue from 'vue'
 import App from './App.vue'
-import "./plugins/vue2-leaflet";
 import store from "./store/store";
 import { rtdbPlugin } from 'vuefire'
 
