@@ -70,7 +70,6 @@ export default {
     RichEditorText,
     
   },
-
     data() {
         return {
           documents: [],
@@ -234,9 +233,8 @@ export default {
                     db.ref('app/locations').update(updates);
                     self.setActivePageBackoffice('ListeBackoffice')
                     })
-                }
+                }    
             }
-            
         }
         e.preventDefault();
       }
