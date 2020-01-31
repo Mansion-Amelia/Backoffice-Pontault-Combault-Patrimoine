@@ -39,12 +39,12 @@
                 <div class="col">
                     <label for="latitudeLocation">Latitude</label>
                     <div class="alert alert-blue" role="alert">Veillez à respecter ce format : 48.8006127</div>
-                    <input type="number" v-model="latitudeLocation" id="latitudeLocation" name="latitudeLocation" class="form-control">
+                    <input type="text" v-model="latitudeLocation" id="latitudeLocation" name="latitudeLocation" class="form-control">
                 </div>
                 <div class="col">
                     <label for="longitudeLocation">Longitude</label>
                     <div class="alert alert-blue" role="alert">Veillez à respecter ce format : 2.6054929</div>
-                    <input type="number" v-model="longitudeLocation" id="longitudeLocation" name="longitudeLocation" class="form-control">
+                    <input type="text" v-model="longitudeLocation" id="longitudeLocation" name="longitudeLocation" class="form-control">
                 </div>
             </div>
 
