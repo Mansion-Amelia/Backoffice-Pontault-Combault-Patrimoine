@@ -213,20 +213,85 @@ export default {
         if (!this.errors.length) {
              const self = this
             if(this.photos.name){
-                let uploadTask = storageRef.child('app/walks/images/'+this.photos.name).put(this.photos);
-                    uploadTask.on('state_changed', function(snapshot){
-                    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    uploader.value = progress;
-                    }, function(error) {
-                    }, function() {
-                    uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-                        self.url=downloadURL;
+                if(this.nameWalk==this.walk.name){
+
+                    let uploadTask = storageRef.child('app/walks/images/'+this.photos.name).put(this.photos);
+                        uploadTask.on('state_changed', function(snapshot){
+                        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        uploader.value = progress;
+                        }, function(error) {
+                        }, function() {
+                        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                            self.url=downloadURL;
+                            var postData = {
+                                name: self.nameWalk,
+                                description: self.description,
+                                locations:self.locationsWalk,
+                                gps: self.polyline.latlngs,
+                                photos:self.url,
+                                duration:self.duration,
+                                distance:self.distance
+                            };
+                            var updates = {};
+                            updates[self.nameWalk] = postData;
+                            db.ref('app/walks').update(updates);
+                            self.setActivePageBackoffice('ListeBackoffice')
+                        });
+                    }); 
+                }
+                else{
+                    db.ref('app/walks/'+this.walk.name).remove().then(() => {
+                        let uploadTask = storageRef.child('app/walks/images/'+this.photos.name).put(this.photos);
+                        uploadTask.on('state_changed', function(snapshot){
+                        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        uploader.value = progress;
+                        }, function(error) {
+                        }, function() {
+                        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                            self.url=downloadURL;
+                            var postData = {
+                                name: self.nameWalk,
+                                description: self.description,
+                                locations:self.locationsWalk,
+                                gps: self.polyline.latlngs,
+                                photos:self.url,
+                                duration:self.duration,
+                                distance:self.distance
+                            };
+                            var updates = {};
+                            updates[self.nameWalk] = postData;
+                            db.ref('app/walks').update(updates);
+                            self.setActivePageBackoffice('ListeBackoffice')
+                        });
+                    }); 
+                    })
+                }
+            }else{
+
+                 if(this.nameWalk==this.walk.name){
+
+                    var postData = {
+                            name: self.nameWalk,
+                            description: self.description,
+                            locations:self.locationsWalk,
+                            gps: self.polyline.latlngs,
+                            photos:self.photos,
+                            duration:self.duration,
+                            distance:self.distance
+                    };
+                    var updates = {};
+                    updates[self.nameWalk] = postData;
+                    db.ref('app/walks').update(updates);
+                    self.setActivePageBackoffice('ListeBackoffice')
+                 }
+                 else{
+                     db.ref('app/walks/'+this.walk.name).remove().then(() => {
                          var postData = {
                             name: self.nameWalk,
                             description: self.description,
                             locations:self.locationsWalk,
                             gps: self.polyline.latlngs,
-                            photos:self.url,
+                            photos:self.photos,
                             duration:self.duration,
                             distance:self.distance
                         };
@@ -234,22 +299,8 @@ export default {
                         updates[self.nameWalk] = postData;
                         db.ref('app/walks').update(updates);
                         self.setActivePageBackoffice('ListeBackoffice')
-                    });
-                 }); 
-            }else{
-                var postData = {
-                        name: self.nameWalk,
-                        description: self.description,
-                        locations:self.locationsWalk,
-                        gps: self.polyline.latlngs,
-                        photos:self.photos,
-                        duration:self.duration,
-                        distance:self.distance
-                 };
-                var updates = {};
-                updates[self.nameWalk] = postData;
-                db.ref('app/walks').update(updates);
-                self.setActivePageBackoffice('ListeBackoffice')
+                     })
+                 }
             }
 
         }
