@@ -33,6 +33,24 @@
                 </b-card-body>
             </b-collapse>
         </b-card>
+
+        <b-card no-body class="mb-1">
+            <div header-tag="header" class="p-1" role="tab">
+                <div class="m-2 d-flex justify-content-between" block href="#" v-b-toggle.accordion-3 variant="info">
+                    <h1>
+                        Questions <button @click="setActivePageBackoffice('FormAddQuestion')" class="ml-1 btn btn-primary">Ajouter une question</button>
+                    </h1>
+                    <div class="d-flex flex-column justify-content-center">
+                        <img class="down-icon" src="../img/down.png" />
+                    </div>
+                </div>
+            </div>
+            <b-collapse id="accordion-3" accordion="my-accordion" role="tabpanel">
+                <b-card-body>
+                    <QuestionBoxBackoffice v-for="question in getBackofficeQuestion" :key="question.name" :question='question'></QuestionBoxBackoffice>
+                </b-card-body>
+            </b-collapse>
+        </b-card>
     </div>
 </template>
 
@@ -43,6 +61,7 @@
 
     import LocationBoxBackoffice from '../components/LocationBoxBackoffice'
     import BaladeBoxBackoffice from '../components/BaladeBoxBackoffice'
+     import QuestionBoxBackoffice from '../components/QuestionBoxBackoffice'
 
 
     import FormDeleteLocation from '../components/FormDeleteLocation'
@@ -57,14 +76,16 @@
             FormAddWalk,
             FormDeleteWalk,
             LocationBoxBackoffice,
-            BaladeBoxBackoffice
+            BaladeBoxBackoffice,
+            QuestionBoxBackoffice
         },
         data() {
             return {
                 documents: [],
                 errors: [],
                 locations: [],
-                walks: []
+                walks: [],
+                questions:[]
             }
         },
         firebase: {
@@ -74,7 +95,8 @@
             ...mapActions([
                 'setActivePageBackoffice',
                 'setBackofficeLocation',
-                'setBackofficeWalk'
+                'setBackofficeWalk',
+                'setBackofficeQuestion'
             ]),
             readLocations() {
                 let self = this
@@ -99,17 +121,31 @@
 
                     });
             },
+            readQuestions() {
+                let self = this
+                var query = db.ref('app/questions/').orderByKey();
+                query.once("value")
+                    .then(function (snapshot) {
+                        snapshot.forEach(function (childSnapshot) {
+                            self.questions.push(childSnapshot.val());
+                        });
+                        self.setBackofficeQuestion(self.questions)
+
+                    });
+            },
 
         },
         computed: {
             ...mapGetters([
                 'getBackofficeLocation',
-                'getBackofficeWalk'
+                'getBackofficeWalk',
+                'getBackofficeQuestion'
             ]),
         },
         mounted: function () {
             this.readLocations()
             this.readWalks()
+            this.readQuestions()
         }
     }
 </script>

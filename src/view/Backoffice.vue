@@ -16,6 +16,8 @@ import FormChangeWalk from '../components/FormChangeWalk'
 import FormAddWalk from '../components/FormAddWalk'
 import FormDeleteWalk from '../components/FormDeleteWalk'
 import ListeBackoffice from '../components/ListeBackoffice'
+import FormAddQuestion from '../components/FormAddQuestion'
+import FormChangeQuestion from '../components/FormChangeQuestion'
 
     export default {
   name: "Backoffice",
@@ -27,6 +29,8 @@ import ListeBackoffice from '../components/ListeBackoffice'
     ListeBackoffice,
     FormChangeLocation,
     FormChangeWalk,
+    FormAddQuestion,
+    FormChangeQuestion
   },
   data() {
     return {
