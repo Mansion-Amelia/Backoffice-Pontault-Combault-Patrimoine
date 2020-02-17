@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { db } from '../config/db'
+import { db } from '../../../config/db'
 
 export default {
     data() {

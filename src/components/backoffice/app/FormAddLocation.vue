@@ -1,6 +1,6 @@
 <template>
     <div class="formAddLocation form-group">
-        <div @click="setActivePageBackoffice('ListeBackoffice')" class="backIcon" style="cursor: pointer;"><img src="../img/back-blue.svg" /> Retour </div>
+        <div @click="setActivePageBackoffice('ListeBackoffice')" class="backIcon" style="cursor: pointer;"><img src="../../../img/back-blue.svg" /> Retour </div>
         <h1>Ajout d'un lieu</h1>
         <form id="addLocation" novalidate="true">
 
@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import { db,storageRef,storage, firebase } from '../config/db'
+import { db,storageRef,storage, firebase } from '../../../config/db'
 import RichEditorText from './RichEditorText'
 import {mapActions, mapGetters} from 'vuex'
 

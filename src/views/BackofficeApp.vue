@@ -1,6 +1,7 @@
 <template>
   <div class="container containerBackoffice">
-    	<component :is="this.getActivePageBackoffice"></component>  
+    <component :is="this.getActivePageBackoffice"></component>
+    <button @click="returnToSelection">Retour temporaire</button>
   </div>
 </template>
 
@@ -9,13 +10,13 @@
 import { db,storageRef } from '../config/db'
 import {mapActions, mapGetters} from 'vuex'
 
-import FormDeleteLocation from '../components/FormDeleteLocation'
-import FormAddLocation from '../components/FormAddLocation'
-import FormChangeLocation from '../components/FormChangeLocation'
-import FormChangeWalk from '../components/FormChangeWalk'
-import FormAddWalk from '../components/FormAddWalk'
-import FormDeleteWalk from '../components/FormDeleteWalk'
-import ListeBackoffice from '../components/ListeBackoffice'
+import FormDeleteLocation from '../components/backoffice/app/FormDeleteLocation'
+import FormAddLocation from '../components/backoffice/app/FormAddLocation'
+import FormChangeLocation from '../components/backoffice/app/FormChangeLocation'
+import FormChangeWalk from '../components/backoffice/app/FormChangeWalk'
+import FormAddWalk from '../components/backoffice/app/FormAddWalk'
+import FormDeleteWalk from '../components/backoffice/app/FormDeleteWalk'
+import ListeBackoffice from '../components/backoffice/app/ListeBackoffice'
 
     export default {
   name: "Backoffice",
@@ -42,6 +43,9 @@ import ListeBackoffice from '../components/ListeBackoffice'
 	  ... mapActions([
                 'setActivePageBackoffice',
         ]),
+        returnToSelection() {
+          this.$router.replace({ name: "BackofficeSelector" })
+        }
   
   },
   computed:{
