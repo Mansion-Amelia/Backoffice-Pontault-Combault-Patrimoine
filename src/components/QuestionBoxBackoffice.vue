@@ -2,12 +2,16 @@
     <div>
         <a>
             <div class="baladeBox row">
-
-                <div class="baladeInfo col-12 d-flex flex-column justify-content-between">
+                <div class="thumbnailSize col-5">
+                    <img class="baladeThumbnail" v-bind:src="photo" />
+                </div>
+                <div class="baladeInfo col-7 d-flex flex-column justify-content-between">
                     <div class="baladeTitle">{{question.name}}</div>
+                     <div class="baladeTitle">{{question.location}}</div>
                     <div class="d-flex justify-content-between">
                         <div class="baladeDistance d-flex">
-                            {{question.location}}
+                        </div>
+                        <div class="baladeDuration d-flex">
                         </div>
                          <div @click="setActivePageBackoffice('FormChangeQuestion'), setBackofficeQuestion(question)"  class="modif" style="cursor: pointer;"><img src="../img/pen.svg" /></div>
                         <div @click="removeQuestion(question.name)" class="delete" style="cursor: pointer;"><img src="../img/garbage-blue.svg" /></div>
@@ -31,7 +35,9 @@ import { db } from '../config/db'
             return {
             documents: [],
             errors: [],
-            toDelete:[]
+            toDelete:[],
+            photo:null,
+            location:[]
             }
         },
         methods: {
@@ -45,9 +51,23 @@ import { db } from '../config/db'
                  
                 db.ref('app/questions/'+name).remove();
             },
-
-
+            readLocations() {
+                let self=this
+                var query =  db.ref('app/locations/').orderByKey();
+                query.once("value")
+                .then(function(snapshot) {
+                    snapshot.forEach(function(childSnapshot) {
+                        if(childSnapshot.key==self.question.location){
+                            self.location=(childSnapshot.val());
+                            self.photo=self.location.photos
+                        }
+                    });
+                });
+            },
         },
+        mounted:function(){
+            this.readLocations()
+        }
         
     }
 </script>
