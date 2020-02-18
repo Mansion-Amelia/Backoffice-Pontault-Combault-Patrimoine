@@ -7,7 +7,7 @@
                         Lieux <button @click="setActivePageBackoffice('FormAddLocation')" class="ml-1 btn btn-primary">Ajouter un lieu</button>
                     </h1>
                     <div class="d-flex flex-column justify-content-center">
-                        <img class="down-icon" src="../img/down.png" />
+                        <img class="down-icon" src="../../../img/down.png" />
                     </div>
                 </div>
             </div>
@@ -23,7 +23,7 @@
                 <div class="m-2 d-flex justify-content-between" block href="#" v-b-toggle.accordion-2 variant="info">
                     <h1>Balades <button @click="setActivePageBackoffice('FormAddWalk')" class="ml-1 btn btn-primary">Ajouter une balade</button></h1>
                     <div class="d-flex flex-column justify-content-center">
-                        <img class="down-icon" src="../img/down.png" />
+                        <img class="down-icon" src="../../../img/down.png" />
                     </div>
                 </div>
             </div>
@@ -56,18 +56,18 @@
 
 <script>
     // RecentDocuments.vue
-    import { db, storageRef } from '../config/db'
+    import { db, storageRef } from '../../../config/db'
     import { mapActions, mapGetters } from 'vuex'
 
-    import LocationBoxBackoffice from '../components/LocationBoxBackoffice'
-    import BaladeBoxBackoffice from '../components/BaladeBoxBackoffice'
-     import QuestionBoxBackoffice from '../components/QuestionBoxBackoffice'
 
-
-    import FormDeleteLocation from '../components/FormDeleteLocation'
-    import FormAddLocation from '../components/FormAddLocation'
-    import FormAddWalk from '../components/FormAddWalk'
-    import FormDeleteWalk from '../components/FormDeleteWalk'
+    import LocationBoxBackoffice from './LocationBoxBackoffice'
+    import BaladeBoxBackoffice from './BaladeBoxBackoffice'
+    import QuestionBoxBackoffice from './QuestionBoxBackoffice'
+    import FormDeleteLocation from './FormDeleteLocation'
+    import FormAddLocation from './FormAddLocation'
+    import FormAddWalk from './FormAddWalk'
+    import FormDeleteWalk from './FormDeleteWalk'
+    
     export default {
         name: "Backoffice",
         components: {

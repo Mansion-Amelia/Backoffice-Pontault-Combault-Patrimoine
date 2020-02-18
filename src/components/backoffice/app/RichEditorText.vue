@@ -5,31 +5,31 @@
                 <div class="menubar mymenubar">
                     <input type="file" ref="file" @change="processFile($event, commands.image)" style="display: none">
                     <div class="menubar__p  mymenubar__p" @click="$refs.file.click()">
-                        <img src="../img/image.svg" />
+                        <img src="../../../img/image.svg" />
                     </div>
                     <div class="menubar__p mymenubar__p " :class="{ 'is-active': isActive.bold() }" @click="commands.bold">
-                        <img src="../img/bold.svg" />
+                        <img src="../../../img/bold.svg" />
                     </div>
                     <div class="menubar__p  mymenubar__p" :class="{ 'is-active': isActive.italic() }" @click="commands.italic">
-                        <img src="../img/italic.svg" />
+                        <img src="../../../img/italic.svg" />
                     </div>
                     <div class="menubar__p mymenubar__p " :class="{ 'is-active': isActive.strike() }" @click="commands.strike">
-                        <img src="../img/strikethrough.svg" />
+                        <img src="../../../img/strikethrough.svg" />
                     </div>
                     <div class="menubar__p  mymenubar__p" :class="{ 'is-active': isActive.underline() }" @click="commands.underline">
-                        <img src="../img/underline.svg" />
+                        <img src="../../../img/underline.svg" />
                     </div>
                     <div class="menubar__p  mymenubar__p" :class="{ 'is-active': isActive.bullet_list() }" @click="commands.bullet_list">
-                        <img src="../img/list.svg" />
+                        <img src="../../../img/list.svg" />
                     </div>
                     <div class="menubar__p mymenubar__p " :class="{ 'is-active': isActive.ordered_list() }" @click="commands.ordered_list">
-                        <img src="../img/list-numbers.svg" />
+                        <img src="../../../img/list-numbers.svg" />
                     </div>
                     <div class="menubar__p  mymenubar__p" @click="commands.undo">
-                        <img src="../img/undo.svg" />
+                        <img src="../../../img/undo.svg" />
                     </div>
                     <div class="menubar__p  mymenubar__p" @click="commands.redo">
-                        <img src="../img/redo.svg" />
+                        <img src="../../../img/redo.svg" />
                     </div>
                 </div>
             </editor-menu-bar>
@@ -45,7 +45,7 @@
 
                 <template v-else>
                     <div class="menububble__button" @click="showLinkMenu(getMarkAttrs('link'))" :class="{ 'is-active': isActive.link() }">
-                        <span><img src="../img/link.svg" />{{ isActive.link() ? 'Update Link' : 'Add Link'}}</span>
+                        <span><img src="../../../img/link.svg" />{{ isActive.link() ? 'Update Link' : 'Add Link'}}</span>
                     </div>
                 </template>
 
@@ -83,7 +83,7 @@
         Image
 
     } from 'tiptap-extensions'
-    import { db, storageRef, storage, firebase } from '../config/db'
+    import { db, storageRef, storage, firebase } from '../../../config/db'
 
 
     export default {

@@ -13,7 +13,7 @@
                                   :icontest="marker.category" 
                                   />
                     <l-control>
-                        <div @click="increaseCenter" class="localisationButton"><img src="../img/target-me.svg" /></div>
+                        <div @click="increaseCenter" class="localisationButton"><img src="../../../img/target-me.svg" /></div>
                     </l-control>
                 </l-map>
             </div>
@@ -21,7 +21,7 @@
 
 
 <script>
-  import { db } from '../config/db'
+  import { db } from '../../../config/db'
   import {LMap, LTileLayer, LMarker, LPolyline, LControl} from 'vue2-leaflet'
   import MarkerPopup from "./MarkerPopup";
   import { latLng } from "leaflet";

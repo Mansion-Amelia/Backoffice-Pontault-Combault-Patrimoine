@@ -9,15 +9,15 @@
                     <div class="baladeTitle">{{ walk.name }}</div>
                     <div class="d-flex justify-content-between">
                         <div class="baladeDistance d-flex">
-                            <div><img src="../img/distance-blue.svg" /></div>
+                            <div><img src="../../../img/distance-blue.svg" /></div>
                             <div class="align-self-end km">{{ walk.distance }}</div>
                         </div>
                         <div class="baladeDuration d-flex">
-                            <div><img src="../img/chronometer-blue.svg" /></div>
+                            <div><img src="../../../img/chronometer-blue.svg" /></div>
                             <div class="align-self-end duration">{{ walk.duration}}</div>
                         </div>
-                        <div class="modif" style="cursor: pointer;" @click="setActivePageBackoffice('FormChangeWalk'), setBackofficeWalk(walk)"><img src="../img/pen.svg" /></div>
-                        <div class="delete" style="cursor: pointer;" @click="removeWalkCarnet(walk.name)" ><img src="../img/garbage-blue.svg" /></div>
+                        <div class="modif" style="cursor: pointer;" @click="setActivePageBackoffice('FormChangeWalk'), setBackofficeWalk(walk)"><img src="../../../img/pen.svg" /></div>
+                        <div class="delete" style="cursor: pointer;" @click="removeWalkCarnet(walk.name)" ><img src="../../../img/garbage-blue.svg" /></div>
                     </div>
                 </div>
             </div>
@@ -28,7 +28,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { db } from '../config/db'
+import { db } from '../../../config/db'
 
 
     export default {

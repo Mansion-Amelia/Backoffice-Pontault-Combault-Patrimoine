@@ -12,8 +12,8 @@
                         </div>
                         <div class="baladeDuration d-flex">
                         </div>
-                         <div @click="setActivePageBackoffice('FormChangeLocation'), setBackofficeLocation(location)"  class="modif" style="cursor: pointer;"><img src="../img/pen.svg" /></div>
-                        <div @click="removeLocationCarnet(location.name)" class="delete" style="cursor: pointer;"><img src="../img/garbage-blue.svg" /></div>
+                         <div @click="setActivePageBackoffice('FormChangeLocation'), setBackofficeLocation(location)"  class="modif" style="cursor: pointer;"><img src="../../../img/pen.svg" /></div>
+                        <div @click="removeLocationCarnet(location.name)" class="delete" style="cursor: pointer;"><img src="../../../img/garbage-blue.svg" /></div>
                     </div>
                 </div>
             </div>
@@ -24,7 +24,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { db } from '../config/db'
+import { db } from '../../../config/db'
 
 
     export default {

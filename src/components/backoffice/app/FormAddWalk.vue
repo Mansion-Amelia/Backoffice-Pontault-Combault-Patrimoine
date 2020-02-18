@@ -1,6 +1,6 @@
 <template>
     <div class="formAddLocation">
-        <div @click="setActivePageBackoffice('ListeBackoffice')" class="backIcon" style="cursor: pointer;"><img src="../img/back-blue.svg" /> Retour </div>
+        <div @click="setActivePageBackoffice('ListeBackoffice')" class="backIcon" style="cursor: pointer;"><img src="../../../img/back-blue.svg" /> Retour </div>
         <h1>Ajout d'une balade</h1>
         <form id="AddWalkLocation" @submit="checkFormAddWalk" novalidate="true">
             <p class="alert alert-danger" v-if="errors.length">
@@ -26,7 +26,7 @@
                 <div> Lieux ajoutés :</div>
                 <ul >
                     <li v-for="location in (locationsWalk)" v-bind:value="location" v-bind:key="location" class="lieuAjoute">
-                        {{ location }}  <span class="delete" @click="removechoice(location)"><img src="../img/garbage-blue.svg" /></span>
+                        {{ location }}  <span class="delete" @click="removechoice(location)"><img src="../../../img/garbage-blue.svg" /></span>
                     </li>
                 </ul>
             </div>
@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import { db,storageRef,storage, firebase  } from '../config/db'
+import { db,storageRef,storage, firebase  } from '../../../config/db'
 import RichEditorText from './RichEditorText'
 import myMap from './map'
 import {mapActions, mapGetters} from 'vuex'
