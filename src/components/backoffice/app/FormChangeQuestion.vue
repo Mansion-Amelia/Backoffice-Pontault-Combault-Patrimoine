@@ -1,6 +1,6 @@
 <template>
     <div class="formChangeQuestionform-group">
-        <div @click="setActivePageBackoffice('ListeBackoffice')" class="backIcon" style="cursor: pointer;"><img src="../img/back-blue.svg" /> Retour </div>
+        <div @click="setActivePageBackoffice('ListeBackoffice')" class="backIcon" style="cursor: pointer;"><img src="../../../img/back-blue.svg" /> Retour </div>
         <h1>Modifier d'une question</h1>
         <form id="changeQuestion" novalidate="true">
 

@@ -1,6 +1,6 @@
 <template>
     <div class="formAddLocation form-group">
-        <div @click="setActivePageBackoffice('ListeBackoffice')" class="backIcon" style="cursor: pointer;"><img src="../img/back-blue.svg" /> Retour </div>
+        <div @click="setActivePageBackoffice('ListeBackoffice')" class="backIcon" style="cursor: pointer;"><img src="./../../img/back-blue.svg" /> Retour </div>
         <h1>Ajout d'une question</h1>
         <form id="addQuestion" novalidate="true">
 
