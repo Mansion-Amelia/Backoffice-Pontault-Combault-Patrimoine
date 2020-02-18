@@ -4,14 +4,15 @@
       <div class="connectedAs">Connecté en tant que <span class="bold">{{ pseudo }}</span></div>
     </div>
     <div v-bind:class="[pseudo ? 'navigationOptions' : 'navigationOptions alone']">
-        <div class="editProfile bold" @click="editProfile">Editer mon profil</div>
-        <div class="logout bold" @click="logout">Déconnexion</div>
+        <div class="editProfile link" @click="editProfile">Editer mon profil</div>
+        <div class="logout link" @click="logout">Déconnexion</div>
     </div>
   </div>
 </template>
 
 <script>
 import firebase from "firebase";
+import userStore from "../../../store/userStore";
 export default {
   props:['pseudo'],
   data() {
@@ -24,6 +25,7 @@ export default {
         .auth()
         .signOut()
         .then(() => {
+          userStore.dispatch("fetchUser", null);
           this.$router.replace({ name: "loginAdministration" })
         });
     },
@@ -53,6 +55,11 @@ export default {
   }
   .navigationOptions {
     margin-right: 50px;
+  }
+
+  .navigationOptions div:hover {
+    transform:scale(0.95);
+    cursor:pointer;
   }
 
   .connectedAsContainer {

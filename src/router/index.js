@@ -5,6 +5,7 @@ import Router from 'vue-router';
 import LoginAdministration from '../views/LoginAdministration'
 import BackofficeSelector from '../views/BackofficeSelector'
 import BackofficeApp from '../views/BackofficeApp'
+import Home from '../views/Home'
 
 Vue.use(Router)
 
@@ -16,20 +17,16 @@ const router = new Router({
       path: '*',
       redirect: '/'
     },
-    /*{
+    {
         path: '/',
         name: 'home',
         component: Home
-    },*/
+    },
     {
-      path: '/',
+      path: '/loginAdministration',
       name: 'loginAdministration',
       component: LoginAdministration
     },
-    /*{
-        path: 'backoffice/*',
-        redirect: '/backoffice'
-    },*/
     {
       path: '/backoffice/selector',
       name: 'BackofficeSelector',
@@ -46,16 +43,16 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-  const currentUser = firebase.auth().currentUser
   const requiresAdminAuth = to.matched.some(record => record.meta.requiresAdminAuth)
-  let isAdmin = false
-  if(currentUser) {
-    isAdmin = currentUser.email === 'contact@pontault-combault-patrimoine.fr'
-  }
 
-  // if(to.name === 'loginAdministration' && isAdmin) next('BackofficeApp')
   if(requiresAdminAuth) {
-    if(!isAdmin) next('loginAdministration')
+    const currentUser = firebase.auth().currentUser
+    let isAdmin = false
+    if(currentUser) {
+      isAdmin = currentUser.email === 'contact@pontault-combault-patrimoine.fr'
+    }
+
+    if(!isAdmin) next('/loginAdministration')
     else next()
   }
   else next()

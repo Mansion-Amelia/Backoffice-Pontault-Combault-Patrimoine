@@ -10,6 +10,7 @@
         Gérer le site internet
       </div>
     </div>
+    <div @click="goToSite" class="backToSite link">Retour vers le site</div>
   </div>
 </template>
 
@@ -28,6 +29,9 @@ export default {
       if(selectedOption === 'app') {
         this.$router.replace({ name: "BackofficeApp" })
       }
+    },
+    goToSite() {
+       this.$router.replace({ name: "home" });
     }
   }
 };
@@ -59,6 +63,11 @@ export default {
   }
 
   .option:hover {
-    transform:scale(0.95)
+    transform:scale(0.95);
+    cursor:pointer;
+  }
+
+  .BOSelector .backToSite {
+    margin-top: 50px;
   }
 </style>

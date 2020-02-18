@@ -1,6 +1,6 @@
 <template>
   <div class="container containerBackoffice">
-    <div @click="returnToSelection" class="backIcon" style="cursor: pointer;"><img src="../img/back-blue.svg" /> Retour </div>
+    <div v-if="this.getActivePageBackoffice === 'ListeBackoffice'" @click="returnToSelection" class="backIcon" style="cursor: pointer;"><img src="../img/back-blue.svg" /> Retour </div>
     <component :is="this.getActivePageBackoffice"></component>
   </div>
 </template>

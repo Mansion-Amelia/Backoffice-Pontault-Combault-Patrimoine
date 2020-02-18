@@ -40,6 +40,7 @@ export default {
     }
     :root {
         --darkbluePontault: #44546A;
+        --bluePontault: #5B9BD5;
     }
     .bold {
         font-weight: bold;
@@ -52,9 +53,26 @@ export default {
         width: 100%;
         font-family: 'Roboto', sans-serif;
     }
+
+    #appContainer h2 {
+        font-size: 30px;
+        font-weight: bold;
+        margin: 30px;
+    }
+
     #appContainer h3 {
         font-size: 25px;
         font-weight: bold;
         margin:50px;
+    }
+
+    .link {
+        font-weight: bold;
+        color: var(--darkbluePontault)
+    }
+
+    .link:hover {
+        transform: scale(0.95);
+        cursor:pointer;
     }
 </style>

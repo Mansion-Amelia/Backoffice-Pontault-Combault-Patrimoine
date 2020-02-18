@@ -78,7 +78,7 @@ export default {
   }
   .connectionFormContainer label {
       font-weight: bold;
-      margin:15px;
+      margin:15px 0px;
   }
 
   .connectionFormContainer input {
@@ -98,10 +98,11 @@ export default {
     color:white;
     padding: 10px 30px;
     font-weight: bold;
-    margin-top: 50px;
+    margin-top: 30px;
   }
 
   .connectionFormContainer .submit:hover {
-    transform: scale(0.95)
+    transform: scale(0.95);
+    cursor:pointer;
   }
 </style>
