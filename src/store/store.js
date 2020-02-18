@@ -7,6 +7,7 @@ const state= {
     activePageBackoffice:null,
     backofficeLocation:[],
     backofficeWalk:[],
+    backofficeQuestion:[]
 }
 
 const mutations= {
@@ -19,11 +20,17 @@ const mutations= {
     DELETE_BACKOFFICE_WALK(state,props){
         state.backofficeWalk=state.backofficeWalk.filter((item) => item.name !== props.name)
     },
+    DELETE_BACKOFFICE_QUESTION(state,props){
+        state.backofficeQuestion=state.backofficeQuestion.filter((item) => item.name !== props.name)
+    },
     SET_BACKOFFICE_LOCATION(state, props){
         state.backofficeLocation=props
     },
     SET_BACKOFFICE_WALK(state, props){
         state.backofficeWalk=props
+    },
+    SET_BACKOFFICE_QUESTION(state, props){
+        state.backofficeQuestion=props
     }
 }
 const getters={
@@ -35,6 +42,9 @@ const getters={
     },
     getBackofficeWalk(state){
         return state.backofficeWalk
+    },
+    getBackofficeQuestion(state){
+        return state.backofficeQuestion
     }
 }
 
@@ -48,11 +58,17 @@ const actions={
     deleteBackofficeWalk: (store, props) => {
         store.commit('DELETE_BACKOFFICE_WALK', props)
     },
+    deleteBackofficeQuestion: (store, props) => {
+        store.commit('DELETE_BACKOFFICE_QUESTION', props)
+    },
     setBackofficeLocation: (store, props) => {
         store.commit('SET_BACKOFFICE_LOCATION', props)
     },
     setBackofficeWalk: (store, props) => {
         store.commit('SET_BACKOFFICE_WALK', props)
+    },
+    setBackofficeQuestion: (store, props) => {
+        store.commit('SET_BACKOFFICE_QUESTION', props)
     }
 }
 
