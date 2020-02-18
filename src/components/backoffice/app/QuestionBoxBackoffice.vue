@@ -13,8 +13,8 @@
                         </div>
                         <div class="baladeDuration d-flex">
                         </div>
-                         <div @click="setActivePageBackoffice('FormChangeQuestion'), setBackofficeQuestion(question)"  class="modif" style="cursor: pointer;"><img src="../img/pen.svg" /></div>
-                        <div @click="removeQuestion(question.name)" class="delete" style="cursor: pointer;"><img src="../img/garbage-blue.svg" /></div>
+                         <div @click="setActivePageBackoffice('FormChangeQuestion'), setBackofficeQuestion(question)"  class="modif" style="cursor: pointer;"><img src="../../../img/pen.svg" /></div>
+                        <div @click="removeQuestion(question.name)" class="delete" style="cursor: pointer;"><img src="../../../img/garbage-blue.svg" /></div>
                     </div>
                 </div>
             </div>
@@ -25,7 +25,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { db } from '../config/db'
+import { db } from '../../../config/db'
 
 
     export default {

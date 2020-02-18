@@ -41,7 +41,7 @@
                         Questions <button @click="setActivePageBackoffice('FormAddQuestion')" class="ml-1 btn btn-primary">Ajouter une question</button>
                     </h1>
                     <div class="d-flex flex-column justify-content-center">
-                        <img class="down-icon" src="../img/down.png" />
+                        <img class="down-icon" src="../../../img/down.png" />
                     </div>
                 </div>
             </div>

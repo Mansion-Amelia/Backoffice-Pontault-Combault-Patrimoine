@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import { db,storageRef,storage, firebase } from '../config/db'
+import { db,storageRef,storage, firebase } from '../../../config/db'
 import RichEditorText from './RichEditorText'
 import {mapActions, mapGetters} from 'vuex'
 
