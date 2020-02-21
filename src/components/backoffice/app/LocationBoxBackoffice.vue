@@ -57,7 +57,13 @@ import { db } from '../../../config/db'
                             stored.forEach(function(child){
                                    
                                     if(child==self.location.name){
-                                        db.ref('app/walks/'+present.name+'/locations/'+tmp).remove()
+                                        db.ref('app/walks/'+present.name+'/locations/'+tmp).remove();
+                                         let date=new Date().toLocaleString()
+                                        var data={
+                                            locations : date,
+                                            walks:date
+                                        }
+                                        db.ref('app/lastUpdates').update(data);
                                     }else{
                                         tmp++
                                     }

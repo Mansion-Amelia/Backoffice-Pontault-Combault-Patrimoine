@@ -209,6 +209,8 @@ export default {
             }, function(error) {}, function() {
                 uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
                     self.url=downloadURL;
+                    let date=new Date().toLocaleString()
+
                     var postData = {
                         name: self.nameWalk,
                         description: self.description,
@@ -216,11 +218,16 @@ export default {
                         gps: self.polyline.latlngs,
                         photos:self.url,
                         duration:self.duration,
-                        distance:self.distance
+                        distance:self.distance,
+                        lastUpdates:date
                     };
                     var updates = {};
                     updates[self.nameWalk] = postData;
                     db.ref('app/walks').update(updates);
+                    var data={
+                            walks : date
+                        }
+                db.ref('app/lastUpdates').update(data);
                     self.setActivePageBackoffice('ListeBackoffice')
                 });
             }); 

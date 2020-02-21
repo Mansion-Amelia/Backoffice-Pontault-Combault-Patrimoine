@@ -130,6 +130,7 @@ export default {
         } 
         if (!this.errors.length) {
             const self = this
+            let date=new Date().toLocaleString()
             var postData = {
                 name: self.nameQuestion,
                 location: self.locationQuestion,
@@ -138,10 +139,15 @@ export default {
                 wrongAnswer2: self.wrongAnswer2,
                 wrongAnswer3: self.wrongAnswer3,
                 description: self.description,
+                lastUpdates:date
             };
             var updates = {};
             updates[self.nameQuestion] = postData;
             db.ref('app/questions').update(updates);
+            var data={
+                            questions : date
+                        }
+                db.ref('app/lastUpdates').update(data);
             self.setActivePageBackoffice('ListeBackoffice')
         }
     }

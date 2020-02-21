@@ -7,7 +7,10 @@ const state= {
     activePageBackoffice:null,
     backofficeLocation:[],
     backofficeWalk:[],
-    backofficeQuestion:[]
+    backofficeQuestion:[],
+    localStoreLocations:[],
+    localStoreWalks:[],
+    localStoreQuestions:[]
 }
 
 const mutations= {
@@ -31,6 +34,24 @@ const mutations= {
     },
     SET_BACKOFFICE_QUESTION(state, props){
         state.backofficeQuestion=props
+    },
+    ADD_LOCATION(state,props){
+        state.localStoreLocations.push(props)
+    },
+    ADD_WALK(state,props){
+        state.localStoreWalks.push(props)
+    },
+    ADD_QUESTION(state,props){
+        state.localStoreQuestions.push(props)
+    },
+    DELETE_LOCATION(state,props){
+        state.localStoreLocations=state.localStoreLocations.filter((item) => item.name !== props.name)
+    },
+    DELETE_WALK(state,props){
+        state.localStoreWalks=state.localStoreWalks.filter((item) => item.name !== props.name)
+    },
+    DELETE_QUESTION(state,props){
+        state.localStoreQuestions=state.localStoreQuestions.filter((item) => item.name !== props.name)
     }
 }
 const getters={
@@ -45,7 +66,16 @@ const getters={
     },
     getBackofficeQuestion(state){
         return state.backofficeQuestion
-    }
+    },
+    getLocalStoreLocations(state){
+        return state.localStoreLocations
+    },
+    getLocalStoreWalks(state){
+        return state.localStoreWalks
+    },
+    getLocalStoreQuestions(state){
+        return state.localStoreQuestions
+    },
 }
 
 const actions={
@@ -69,7 +99,25 @@ const actions={
     },
     setBackofficeQuestion: (store, props) => {
         store.commit('SET_BACKOFFICE_QUESTION', props)
-    }
+    },
+    addLocationToStore(store,props){
+        store.commit('ADD_LOCATION',props)
+    },
+    addWalkToStore(store,props){
+        store.commit('ADD_WALK',props)
+    },
+    addQuestionToStore(store,props){
+        store.commit('ADD_QUESTION',props)
+    },
+    deleteLocationFromStore: (store, props) => {
+        store.commit('DELETE_LOCATION', props)
+    },
+    deleteWalkFromStore: (store, props) => {
+        store.commit('DELETE_WALK', props)
+    },
+    deleteQuestionFromStore: (store, props) => {
+        store.commit('DELETE_QUESTION', props)
+    },
 }
 
 export default new Vuex.Store({

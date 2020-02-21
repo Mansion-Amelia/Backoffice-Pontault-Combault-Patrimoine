@@ -149,6 +149,7 @@ export default {
                     }, function() {
                     uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
                         self.url=downloadURL;
+                        let date=new Date().toLocaleString()
                         var postData = {
                             name: self.nameLocation,
                             category: self.categoryLocation,
@@ -158,11 +159,16 @@ export default {
                                 0: self.latitudeLocation, 
                                 1: self.longitudeLocation
                             },
-                            photos:self.url
+                            photos:self.url,
+                            lastUpdate:date
                         };
                         var updates = {};
                         updates[self.nameLocation] = postData;
                         db.ref('app/locations').update(updates);
+                        var data={
+                            locations : date
+                        }
+                    db.ref('app/lastUpdates').update(data);
                         self.setActivePageBackoffice('ListeBackoffice')
                     });
                  });
@@ -177,6 +183,7 @@ export default {
                         }, function() {
                         uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
                             self.url=downloadURL;
+                            let date=new Date().toLocaleString()
                             var postData = {
                                 name: self.nameLocation,
                                 category: self.categoryLocation,
@@ -186,11 +193,16 @@ export default {
                                     0: self.latitudeLocation, 
                                     1: self.longitudeLocation
                                 },
-                                photos:self.url
+                                photos:self.url,
+                                lastUpdate:date
                             };
                             var updates = {};
                             updates[self.nameLocation] = postData;
                             db.ref('app/locations').update(updates);
+                            var data={
+                            locations : date
+                        }
+                    db.ref('app/lastUpdates').update(data);
                             self.setActivePageBackoffice('ListeBackoffice')
                             });
                         });
@@ -199,6 +211,7 @@ export default {
                  
             }else{
                 if(this.nameLocation==this.location.name){
+                    let date=new Date().toLocaleString()
                     var postData = {
                         name: self.nameLocation,
                         category: self.categoryLocation,
@@ -208,15 +221,21 @@ export default {
                             0: self.latitudeLocation, 
                             1: self.longitudeLocation
                         },
-                        photos:self.photos
+                        photos:self.photos,
+                        lastUpdate:date
                     };
                     var updates = {};
                     updates[self.nameLocation] = postData;
                     db.ref('app/locations').update(updates);
+                    var data={
+                            locations : date
+                        }
+                    db.ref('app/lastUpdates').update(data);
                     self.setActivePageBackoffice('ListeBackoffice')
                 }
                 else{
                     db.ref('app/locations/'+this.location.name).remove().then(() => {
+                        let date=new Date().toLocaleString()
                         var postData = {
                         name: self.nameLocation,
                         category: self.categoryLocation,
@@ -226,11 +245,17 @@ export default {
                             0: self.latitudeLocation, 
                             1: self.longitudeLocation
                         },
-                        photos:self.photos
+                        photos:self.photos,
+                        lastUpdate:date
+
                     };
                     var updates = {};
                     updates[self.nameLocation] = postData;
                     db.ref('app/locations').update(updates);
+                    var data={
+                            locations : date
+                        }
+                    db.ref('app/lastUpdates').update(data);
                     self.setActivePageBackoffice('ListeBackoffice')
                     })
                 }    

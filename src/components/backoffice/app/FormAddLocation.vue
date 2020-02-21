@@ -144,6 +144,7 @@ export default {
             }, function() {
             uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
                 self.url=downloadURL;
+                let date=new Date().toLocaleString()
                 var postData = {
                 name: self.nameLocation,
                 category: self.categoryLocation,
@@ -153,11 +154,16 @@ export default {
                     0: self.latitudeLocation, 
                     1: self.longitudeLocation
                 },
-                photos:self.url
+                photos:self.url,
+                lastUpdates:date
                 };
                 var updates = {};
                 updates[self.nameLocation] = postData;
                 db.ref('app/locations').update(updates);
+                var data={
+                            locations : date
+                        }
+                db.ref('app/lastUpdates').update(data);
                 self.setActivePageBackoffice('ListeBackoffice')
             });
             }); 
