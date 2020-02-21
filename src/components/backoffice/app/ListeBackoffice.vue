@@ -85,7 +85,10 @@
                 errors: [],
                 locations: [],
                 walks: [],
-                questions:[]
+                questions:[],
+                lastUpdatesLocation:null,
+                lastUpdatesQuestion:null,
+                lastUpdatesWalk:null,
             }
         },
         firebase: {
@@ -96,7 +99,13 @@
                 'setActivePageBackoffice',
                 'setBackofficeLocation',
                 'setBackofficeWalk',
-                'setBackofficeQuestion'
+                'setBackofficeQuestion',
+                'addWalkToStore',
+                'addQuestionToStore',
+                'addLocationToStore',
+                'setLocalLastUpdatesLocations',
+                'setLocalLastUpdatesQuestions',
+                'setLocalLastUpdatesWalks'
             ]),
             readLocations() {
                 let self = this
@@ -104,10 +113,33 @@
                 query.once("value")
                     .then(function (snapshot) {
                         snapshot.forEach(function (childSnapshot) {
-                            self.locations.push(childSnapshot.val());
+                            const parsed = JSON.stringify(childSnapshot.val()); 
+                            self.addLocationToStore(childSnapshot.val())
+                            localStorage.setItem('StorageLocations', parsed);
                         });
+                        self.locations.push(self.getLocalStoreQuestions);
+                        console.log(self.locations)
+                        this.setLocalLastUpdates()
                         self.setBackofficeLocation(self.locations)
-                    });
+                })
+            },
+            setLocationUpdates(){
+                let date=new Date().toLocaleString()
+                this.setLocalLastUpdatesLocations(date)
+                const parsed = JSON.stringify(this.getLastUpdatesLocations); 
+                localStorage.setItem('StorageLastUpdatesLocations', parsed);
+            },
+            setQuestionsUpdates(){
+                let date=new Date().toLocaleString()
+                this.setLocalLastUpdatesQuestions(date)
+                const parsed = JSON.stringify(this.getLastUpdatesQuestions); 
+                localStorage.setItem('StorageLastUpdatesQuestions', parsed);
+            },
+            setWalksUpdates(){
+                let date=new Date().toLocaleString()
+                this.setLocalLastUpdatesWalks(date)
+                const parsed = JSON.stringify(this.getLastUpdatesWalks); 
+                localStorage.setItem('StorageLastUpdatesWalks', parsed);
             },
             readWalks() {
                 let self = this
@@ -133,19 +165,148 @@
 
                     });
             },
+            testStorageLocations(){
+                if (localStorage.getItem('StorageLocations')) {
+                    try {
+                        const listLocations = JSON.parse(localStorage.getItem('StorageLocations'));
+                        listLocations.forEach(location => {
+                            this.addLocationToStore(location)
+                        });
+                    
+                    } catch(e) {
+                        localStorage.removeItem('StorageLocations');
+                    }
+                }
+            },
+            testStorageWalks(){
+                if (localStorage.getItem('StorageWalks')) {
+                    try {
+                        const listWalks = JSON.parse(localStorage.getItem('StorageWalks'));
+                        listWalks.forEach(walk => {
+                            this.addWalkToStore(walk)
+                        });
+                    
+                    } catch(e) {
+                        localStorage.removeItem('StorageWalks');
+                    }
+                }
+            },
+            testStorageQuestions(){
+                if (localStorage.getItem('StorageQuestions')) {
+                    try {
+                        const listQuestions = JSON.parse(localStorage.getItem('StorageQuestions'));
+                        listQuestions.forEach(question => {
+                            this.addQuestionToStore(question)
+                        });
+                    
+                    } catch(e) {
+                        localStorage.removeItem('StorageQuestions');
+                    }
+                }
+            },
+            testUpdates(){
+                if (localStorage.getItem('StorageLastUpdatesLocations')) {
+                    try {
+                        const date = JSON.parse(localStorage.getItem('StorageLastUpdatesLocations'));
+                        listLocations.forEach(date => {
+                            this.setLocalLastUpdatesLocations(date)
+                        });
+                    
+                    } catch(e) {
+                        localStorage.removeItem('StorageLastUpdatesLocations');
+                    }
+                }
+                else{ 
+                    this.setLocationUpdates()
+                }
+                if (localStorage.getItem('StorageLastUpdatesQuestions')) {
+                    try {
+                        const date = JSON.parse(localStorage.getItem('StorageLastUpdatesQuestions'));
+                        listLocations.forEach(question => {
+                            this.setLocalLastUpdatesQuestions(question)
+                        });
+                    
+                    } catch(e) {
+                        localStorage.removeItem('StorageLastUpdatesQuestions');
+                    }
+                }
+                else{ 
+                    this.setQuestionsUpdates()
+                }
 
+                if (localStorage.getItem('StorageLastUpdatesWalks')) {
+                    try {
+                        const date = JSON.parse(localStorage.getItem('StorageLastUpdatesWalks'));
+                        listLocations.forEach(walk => {
+                            this.setLocalLastUpdatesWalks(walk)
+                        });
+                    
+                    } catch(e) {
+                        localStorage.removeItem('StorageLastUpdatesWalks');
+                    }
+                }
+                else{ 
+                    this.setWalksUpdates()
+                }
+            }
         },
         computed: {
             ...mapGetters([
                 'getBackofficeLocation',
                 'getBackofficeWalk',
-                'getBackofficeQuestion'
+                'getBackofficeQuestion',
+                'getLocalStoreQuestions',
+                'getLocalStoreWalks',
+                'getLocalStoreLocations',
+                'getLastUpdatesLocations',
+                'getLastUpdatesWalks',
+                'getLastUpdatesQuestions',
             ]),
         },
         mounted: function () {
-            this.readLocations()
-            this.readWalks()
-            this.readQuestions()
+            this.testStorageWalks()
+            this.testStorageQuestions()
+            this.testStorageLocations()
+            this.testUpdates()
+
+            if(this.getLastUpdatesLocations==0){
+                this.setLocationUpdates()
+                this.readLocations()
+            }
+            if(this.getLastUpdatesWalks==0){
+                this.setWalksUpdates()
+                this.readWalks()
+            }
+            if(this.getLastUpdatesQuestions==0){
+                this.setQuestionsUpdates()
+                this.readQuestions()
+            }
+            let self=this
+            var query = db.ref('app/lastUpdates/').orderByKey();
+            query.once("value").then(function (snapshot) {
+                snapshot.forEach(function (childSnapshot) {
+                        if(childSnapshot.key=="questions"){
+                            self.lastUpdatesQuestion=childSnapshot.val()
+                        }
+                        if(childSnapshot.key=="walks"){
+                            self.lastUpdatesWalk=childSnapshot.val()
+                        }
+                        if(childSnapshot.key=="locations"){
+                            self.lastUpdatesLocation=childSnapshot.val()
+                        }
+                });
+            });
+
+            if(this.lastUpdatesLocation>this.getLastUpdatesLocations){
+                this.readLocations()
+            }
+            if(this.lastUpdatesQuestion>this.getLastUpdatesQuestions){
+                this.readQuestions()
+            }
+            if(this.lastUpdatesWalk>this.getLastUpdatesWalks){
+                this.readWalks()
+            }
+        
         }
     }
 </script>

@@ -10,7 +10,10 @@ const state= {
     backofficeQuestion:[],
     localStoreLocations:[],
     localStoreWalks:[],
-    localStoreQuestions:[]
+    localStoreQuestions:[],
+    localLastUpdatesLocations:[],
+    localLastUpdatesQuestions:[],
+    localLastUpdatesWalks:[]
 }
 
 const mutations= {
@@ -52,7 +55,16 @@ const mutations= {
     },
     DELETE_QUESTION(state,props){
         state.localStoreQuestions=state.localStoreQuestions.filter((item) => item.name !== props.name)
-    }
+    },
+    SET_LAST_UPDATES_QUESTIONS(state, props){
+        state.localLastUpdatesQuestions=props
+    },
+    SET_LAST_UPDATES_LOCATIONS(state, props){
+        state.localLastUpdatesLocations=props
+    },
+    SET_LAST_UPDATES_WALKS(state, props){
+        state.localLastUpdatesWalks=props
+    },
 }
 const getters={
     getActivePageBackoffice(state){
@@ -75,6 +87,15 @@ const getters={
     },
     getLocalStoreQuestions(state){
         return state.localStoreQuestions
+    },
+    getLastUpdatesLocations(state){
+        return state.localLastUpdatesLocations
+    },
+    getLastUpdatesWalks(state){
+        return state.localLastUpdatesWalks
+    },
+    getLastUpdatesQuestions(state){
+        return state.localLastUpdatesQuestions
     },
 }
 
@@ -117,6 +138,15 @@ const actions={
     },
     deleteQuestionFromStore: (store, props) => {
         store.commit('DELETE_QUESTION', props)
+    },
+    setLocalLastUpdatesLocations: (store, props) => {
+        store.commit('SET_LAST_UPDATES_LOCATIONS', props)
+    },
+    setLocalLastUpdatesWalks: (store, props) => {
+        store.commit('SET_LAST_UPDATES_WALKS', props)
+    },
+    setLocalLastUpdatesQuestions: (store, props) => {
+        store.commit('SET_LAST_UPDATES_QUESTIONS', props)
     },
 }
 
