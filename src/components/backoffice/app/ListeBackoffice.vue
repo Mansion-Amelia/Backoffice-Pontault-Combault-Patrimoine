@@ -13,7 +13,7 @@
             </div>
             <b-collapse id="accordion-1" accordion="my-accordion" role="tabpanel">
                 <b-card-body>
-                    <LocationBoxBackoffice v-for="location in getBackofficeLocation" :key="location.name" :location='location'></LocationBoxBackoffice>
+                    <LocationBoxBackoffice v-for="location in getLocalStoreLocations" :key="location.name" :location='location'></LocationBoxBackoffice>
                 </b-card-body>
             </b-collapse>
         </b-card>
@@ -29,7 +29,7 @@
             </div>
             <b-collapse id="accordion-2" accordion="my-accordion" role="tabpanel">
                 <b-card-body>
-                    <BaladeBoxBackoffice v-for="walk in getBackofficeWalk" :key="walk.name" :walk='walk'></BaladeBoxBackoffice>
+                    <BaladeBoxBackoffice v-for="walk in getLocalStoreWalks" :key="walk.name" :walk='walk'></BaladeBoxBackoffice>
                 </b-card-body>
             </b-collapse>
         </b-card>
@@ -47,7 +47,7 @@
             </div>
             <b-collapse id="accordion-3" accordion="my-accordion" role="tabpanel">
                 <b-card-body>
-                    <QuestionBoxBackoffice v-for="question in getBackofficeQuestion" :key="question.name" :question='question'></QuestionBoxBackoffice>
+                    <QuestionBoxBackoffice v-for="question in getLocalStoreQuestions" :key="question.name" :question='question'></QuestionBoxBackoffice>
                 </b-card-body>
             </b-collapse>
         </b-card>
@@ -107,22 +107,6 @@
                 'setLocalLastUpdatesQuestions',
                 'setLocalLastUpdatesWalks'
             ]),
-            readLocations() {
-                let self = this
-                var query = db.ref('app/locations/').orderByKey();
-                query.once("value")
-                    .then(function (snapshot) {
-                        snapshot.forEach(function (childSnapshot) {
-                            const parsed = JSON.stringify(childSnapshot.val()); 
-                            self.addLocationToStore(childSnapshot.val())
-                            localStorage.setItem('StorageLocations', parsed);
-                        });
-                        self.locations.push(self.getLocalStoreQuestions);
-                        console.log(self.locations)
-                        this.setLocalLastUpdates()
-                        self.setBackofficeLocation(self.locations)
-                })
-            },
             setLocationUpdates(){
                 let date=new Date().toLocaleString()
                 this.setLocalLastUpdatesLocations(date)
@@ -141,6 +125,22 @@
                 const parsed = JSON.stringify(this.getLastUpdatesWalks); 
                 localStorage.setItem('StorageLastUpdatesWalks', parsed);
             },
+            readLocations() {
+                let self = this
+                var query = db.ref('app/locations/').orderByKey();
+                query.once("value")
+                    .then(function (snapshot) {
+                        snapshot.forEach(function (childSnapshot) {
+                            const parsed = JSON.stringify(childSnapshot.val()); 
+                            self.addLocationToStore(childSnapshot.val())
+                            localStorage.setItem('StorageLocations', parsed);
+                        });
+                        self.locations.push(self.getLocalStoreQuestions);
+                        console.log(self.locations)
+                        this.setLocationUpdates()
+                        self.setBackofficeLocation(self.locations)
+                })
+            },
             readWalks() {
                 let self = this
                 var query = db.ref('app/walks/').orderByKey();
@@ -150,6 +150,7 @@
                             self.walks.push(childSnapshot.val());
                         });
                         self.setBackofficeWalk(self.walks)
+                        this.setWalksUpdates()
 
                     });
             },
@@ -162,6 +163,7 @@
                             self.questions.push(childSnapshot.val());
                         });
                         self.setBackofficeQuestion(self.questions)
+                        this.setQuestionsUpdates()
 
                     });
             },
@@ -281,19 +283,20 @@
                 this.setQuestionsUpdates()
                 this.readQuestions()
             }
+         
             let self=this
             var query = db.ref('app/lastUpdates/').orderByKey();
             query.once("value").then(function (snapshot) {
                 snapshot.forEach(function (childSnapshot) {
-                        if(childSnapshot.key=="questions"){
-                            self.lastUpdatesQuestion=childSnapshot.val()
-                        }
-                        if(childSnapshot.key=="walks"){
-                            self.lastUpdatesWalk=childSnapshot.val()
-                        }
-                        if(childSnapshot.key=="locations"){
-                            self.lastUpdatesLocation=childSnapshot.val()
-                        }
+                    if(childSnapshot.key=="questions"){
+                        self.lastUpdatesQuestion=childSnapshot.val()
+                    }
+                    if(childSnapshot.key=="walks"){
+                        self.lastUpdatesWalk=childSnapshot.val()
+                    }
+                    if(childSnapshot.key=="locations"){
+                        self.lastUpdatesLocation=childSnapshot.val()
+                    }
                 });
             });
 
@@ -306,7 +309,9 @@
             if(this.lastUpdatesWalk>this.getLastUpdatesWalks){
                 this.readWalks()
             }
-        
+            console.log("hehe")
+            console.log(this.getBackofficeLocation)
+            console.log(this.getLocalStoreLocations)
         }
     }
 </script>
