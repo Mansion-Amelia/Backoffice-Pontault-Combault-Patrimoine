@@ -108,7 +108,10 @@
                 'setLocalLastUpdatesWalks',
                 'deleteLocalLocations',
                 'deleteLocalWalks',
-                'deleteLocalQuestions'
+                'deleteLocalQuestions',
+                'deleteLocationFromStore',
+                'deleteQuestionFromStore',
+                'deleteWalkFromStore'
             ]),
             setLocationUpdates(){
                 let date=new Date().toLocaleString()
@@ -147,7 +150,7 @@
                 })
             },
             readWalks() {
-                 console.log("read walk")
+                console.log("read walk")
                 let self = this
                 localStorage.removeItem('StorageWalks');
                 self.deleteLocalWalks
@@ -227,7 +230,6 @@
                 }
             },
             testStorageQuestions(){
-                console.log("hehe")
                 if (localStorage.getItem('StorageQuestions')) {
                     try {
                         if(localStorage.getItem('StorageQuestions')!=0){
@@ -254,10 +256,15 @@
             testUpdates(){
                 if (localStorage.getItem('StorageLastUpdatesLocations')) {
                     try {
-                        const date = JSON.parse(localStorage.getItem('StorageLastUpdatesLocations'));
-                        date.forEach(date => {
-                            this.setLocalLastUpdatesLocations(date)
-                        });
+                        if(localStorage.getItem('StorageLastUpdatesLocations')!=0){
+                            const date = JSON.parse(localStorage.getItem('StorageLastUpdatesLocations'));
+                            date.forEach(date => {
+                                this.setLocalLastUpdatesLocations(date)
+                            });
+                        }
+                        else{
+                             this.setLocationUpdates()
+                        }
                     
                     } catch(e) {
                         localStorage.removeItem('StorageLastUpdatesLocations');
@@ -268,11 +275,15 @@
                 }
                 if (localStorage.getItem('StorageLastUpdatesQuestions')) {
                     try {
-                        const date = JSON.parse(localStorage.getItem('StorageLastUpdatesQuestions'));
-                        date.forEach(question => {
-                            this.setLocalLastUpdatesQuestions(question)
-                        });
-                    
+                        if(localStorage.getItem('StorageLastUpdatesQuestions')!=0){
+                            const date = JSON.parse(localStorage.getItem('StorageLastUpdatesQuestions'));
+                            date.forEach(question => {
+                                this.setLocalLastUpdatesQuestions(question)
+                            });
+                        }
+                        else{
+                            this.setQuestionsUpdates()
+                        }
                     } catch(e) {
                         localStorage.removeItem('StorageLastUpdatesQuestions');
                     }
@@ -283,10 +294,15 @@
 
                 if (localStorage.getItem('StorageLastUpdatesWalks')) {
                     try {
-                        const date = JSON.parse(localStorage.getItem('StorageLastUpdatesWalks'));
-                        date.forEach(walk => {
-                            this.setLocalLastUpdatesWalks(walk)
-                        });
+                        if(localStorage.getItem('StorageLastUpdatesWalks')){
+                            const date = JSON.parse(localStorage.getItem('StorageLastUpdatesWalks'));
+                            date.forEach(walk => {
+                                this.setLocalLastUpdatesWalks(walk)
+                            });
+                        }
+                        else{
+                             this.setWalksUpdates()
+                        }
                     
                     } catch(e) {
                         localStorage.removeItem('StorageLastUpdatesWalks');
@@ -316,18 +332,88 @@
                 
             },
             needUpdate(){
+                console.log(this.lastUpdatesLocation)
+                console.log(this.lastUpdatesQuestion)
+                console.log(this.lastUpdatesWalk)
                 if(this.lastUpdatesLocation>this.getLastUpdatesLocations){
+                    console.log("coucou")
                     //trouver celui avec la bonne date
-                    this.readLocations()
+                    this.updateLocation(this.lastUpdatesLocation)
                 }
                 if(this.lastUpdatesQuestion>this.getLastUpdatesQuestions){
-                    this.readQuestions()
+                    console.log("pouet")
+                    this.updateQuestion(this.lastUpdatesQuestion)
                 }
                 if(this.lastUpdatesWalk>this.getLastUpdatesWalks){
-                    this.readWalks()
+                    console.log("ff")
+                    this.updateWalk(this.lastUpdatesWalk)
                 }
 
-            }
+            },
+            updateLocation(date){
+                let self=this
+                var query = db.ref('app/locations/').orderByKey();
+                query.once("value").then(function (snapshot) {
+                    snapshot.forEach(function (childSnapshot) {
+                        childSnapshot.forEach(function(child){
+                            if(child.key=="lastUpdate" && child.val()==date){
+                                self.deleteLocationFromStore(childSnapshot.val())
+                                self.addLocationToStore(childSnapshot.val())
+                                localStorage.removeItem('StorageLocations');
+                                const stored = self.getLocalStoreLocation
+                                const parsed = JSON.stringify(stored); 
+                                localStorage.setItem('StorageLocations', parsed);
+                            }
+                        })
+                    })
+                
+                })
+            },
+            updateWalk(date){
+                let self=this
+                var query = db.ref('app/walks/').orderByKey();
+                query.once("value").then(function (snapshot) {
+                    snapshot.forEach(function (childSnapshot) {
+                        childSnapshot.forEach(function(child){
+                            if(child.key=="lastUpdate" && child.val()==date){
+                                self.deleteWalkFromStore(childSnapshot.val())
+                                self.addWalkToStore(childSnapshot.val())
+                                localStorage.removeItem('StorageWalks');
+                                const stored = self.getLocalStoreWalks
+                                const parsed = JSON.stringify(stored); 
+                                localStorage.setItem('StorageWalks', parsed);
+                            }
+                        })
+                    })
+                
+                })
+            },
+            updateQuestion(date){
+                let self=this
+                var query = db.ref('app/questions/').orderByKey();
+                query.once("value").then(function (snapshot) {
+                    snapshot.forEach(function (childSnapshot) {
+                        childSnapshot.forEach(function(child){
+                            if(child.key=="lastUpdate" && child.val()==date){
+                                //probleme ici : ne supprimer pas l'ancien car n'est plus le meme
+                                console.log(self.getLocalStoreQuestions)
+                                console.log(childSnapshot.val())
+                                self.deleteQuestionFromStore(childSnapshot.val())
+                                console.log(self.getLocalStoreQuestions)
+                                self.addQuestionToStore(childSnapshot.val())
+                                localStorage.removeItem('StorageQuestions');
+                                console.log(localStorage.getItem('StorageQuestions'))
+                                console.log(self.getLocalStoreQuestions)
+                                const stored = self.getLocalStoreQuestions
+                                const parsed = JSON.stringify(stored); 
+                                localStorage.setItem('StorageQuestions', parsed);
+                                console.log(localStorage.getItem('StorageQuestions'))
+                            }
+                        })
+                    })
+                
+                })
+            },
         },
         computed: {
             ...mapGetters([

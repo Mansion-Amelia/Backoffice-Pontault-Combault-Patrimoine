@@ -48,13 +48,13 @@ const mutations= {
         state.localStoreQuestions.push(props)
     },
     DELETE_LOCATION(state,props){
-        state.localStoreLocations=state.localStoreLocations.filter((item) => item.name !== props.name)
+        state.localStoreLocations=state.localStoreLocations.filter((item) => item.lastUpdate !== props.lastUpdate)
     },
     DELETE_WALK(state,props){
-        state.localStoreWalks=state.localStoreWalks.filter((item) => item.name !== props.name)
+        state.localStoreWalks=state.localStoreWalks.filter((item) => item.lastUpdate !== props.lastUpdate)
     },
     DELETE_QUESTION(state,props){
-        state.localStoreQuestions=state.localStoreQuestions.filter((item) => item.name !== props.name)
+        state.localStoreQuestions=state.localStoreQuestions.filter((item) => item.lastUpdate !== props.lastUpdate)
     },
     SET_LAST_UPDATES_QUESTIONS(state, props){
         state.localLastUpdatesQuestions=props
