@@ -65,6 +65,15 @@ const mutations= {
     SET_LAST_UPDATES_WALKS(state, props){
         state.localLastUpdatesWalks=props
     },
+    ERASE_LOCAL_QUESTIONS(){
+        state.localStoreQuestions=state.localStoreQuestions.splice(0,  state.localStoreQuestions.length)
+    },
+    ERASE_LOCAL_WALKS(){
+        state.localStoreWalks=state.localStoreWalks.splice(0,  state.localStoreWalks.length)
+    },
+    ERASE_LOCAL_LOCATIONS(){
+        state.localStoreLocations=state.localStoreLocations.splice(0,  state.localStoreLocations.length)
+    },
 }
 const getters={
     getActivePageBackoffice(state){
@@ -147,6 +156,15 @@ const actions={
     },
     setLocalLastUpdatesQuestions: (store, props) => {
         store.commit('SET_LAST_UPDATES_QUESTIONS', props)
+    },
+    deleteLocalLocations: (store, props) => {
+        store.commit('ERASE_LOCAL_LOCATIONS', props)
+    },
+    deleteLocalQuestions: (store, props) => {
+        store.commit('ERASE_LOCAL_QUESTIONS', props)
+    },
+    deleteLocalWalks: (store, props) => {
+        store.commit('ERASE_LOCAL_WALKS', props)
     },
 }
 

@@ -105,7 +105,10 @@
                 'addLocationToStore',
                 'setLocalLastUpdatesLocations',
                 'setLocalLastUpdatesQuestions',
-                'setLocalLastUpdatesWalks'
+                'setLocalLastUpdatesWalks',
+                'deleteLocalLocations',
+                'deleteLocalWalks',
+                'deleteLocalQuestions'
             ]),
             setLocationUpdates(){
                 let date=new Date().toLocaleString()
@@ -126,7 +129,10 @@
                 localStorage.setItem('StorageLastUpdatesWalks', parsed);
             },
             readLocations() {
+                 console.log("read location")
                 let self = this
+                localStorage.removeItem('StorageLocations');
+                self.deleteLocalLocations
                 var query = db.ref('app/locations/').orderByKey();
                 query.once("value")
                     .then(function (snapshot) {
@@ -136,81 +142,120 @@
                             localStorage.setItem('StorageLocations', parsed);
                         });
                         self.locations.push(self.getLocalStoreQuestions);
-                        console.log(self.locations)
-                        this.setLocationUpdates()
+                        self.setLocationUpdates()
                         self.setBackofficeLocation(self.locations)
                 })
             },
             readWalks() {
+                 console.log("read walk")
                 let self = this
+                localStorage.removeItem('StorageWalks');
+                self.deleteLocalWalks
                 var query = db.ref('app/walks/').orderByKey();
                 query.once("value")
                     .then(function (snapshot) {
-                        snapshot.forEach(function (childSnapshot) {
-                            self.walks.push(childSnapshot.val());
+                         snapshot.forEach(function (childSnapshot) {
+                            const parsed = JSON.stringify(childSnapshot.val()); 
+                            self.addWalkToStore(childSnapshot.val())
+                            localStorage.setItem('StorageWalks', parsed);
                         });
+                        self.walks=self.getLocalStoreWalks;
+                        self.setWalksUpdates()    
                         self.setBackofficeWalk(self.walks)
-                        this.setWalksUpdates()
 
                     });
             },
             readQuestions() {
+                console.log("read question")
                 let self = this
+                localStorage.removeItem('StorageQuestions');
+                self.deleteLocalQuestions
                 var query = db.ref('app/questions/').orderByKey();
                 query.once("value")
                     .then(function (snapshot) {
                         snapshot.forEach(function (childSnapshot) {
-                            self.questions.push(childSnapshot.val());
+                            const parsed = JSON.stringify(childSnapshot.val()); 
+                            self.addQuestionToStore(childSnapshot.val())
+                            localStorage.setItem('StorageQuestions', parsed);
                         });
+                        self.questions=self.getLocalStoreQuestions;
+                        self.setQuestionsUpdates()
                         self.setBackofficeQuestion(self.questions)
-                        this.setQuestionsUpdates()
 
                     });
             },
             testStorageLocations(){
                 if (localStorage.getItem('StorageLocations')) {
                     try {
-                        const listLocations = JSON.parse(localStorage.getItem('StorageLocations'));
-                        listLocations.forEach(location => {
-                            this.addLocationToStore(location)
-                        });
-                    
+                        if (localStorage.getItem('StorageLocations')!=0) {
+                            const listLocations = JSON.parse(localStorage.getItem('StorageLocations'));
+                            listLocations.forEach(location => {
+                                this.addLocationToStore(location)
+                            });
+                        }
+                        else{
+                             this.readLocations()
+                        }
                     } catch(e) {
                         localStorage.removeItem('StorageLocations');
                     }
+                }
+                else{
+                    this.readLocations()
                 }
             },
             testStorageWalks(){
                 if (localStorage.getItem('StorageWalks')) {
                     try {
-                        const listWalks = JSON.parse(localStorage.getItem('StorageWalks'));
-                        listWalks.forEach(walk => {
-                            this.addWalkToStore(walk)
-                        });
+                        if(localStorage.getItem('StorageWalks')!=0){
+                            const listWalks = JSON.parse(localStorage.getItem('StorageWalks'));
+                            listWalks.forEach(walk => {
+                                this.addWalkToStore(walk)
+                            });
+                        }
+                        else{
+                            this.readWalks()
+                        }
+                        
                     
                     } catch(e) {
                         localStorage.removeItem('StorageWalks');
                     }
                 }
+                else{
+                    this.readWalks()
+                }
             },
             testStorageQuestions(){
+                console.log("hehe")
                 if (localStorage.getItem('StorageQuestions')) {
                     try {
-                        const listQuestions = JSON.parse(localStorage.getItem('StorageQuestions'));
-                        listQuestions.forEach(question => {
-                            this.addQuestionToStore(question)
-                        });
+                        if(localStorage.getItem('StorageQuestions')!=0){
+                            const listQuestions = JSON.parse(localStorage.getItem('StorageQuestions'));
+                            listQuestions.forEach(question => {
+                                this.addQuestionToStore(question)
+                            });
+                              console.log(localStorage.getItem('StorageQuestions'))
+                        }
+                        else{
+                            this.readQuestions()
+                              console.log(localStorage.getItem('StorageQuestions'))
+                        }
+                      
                     
                     } catch(e) {
                         localStorage.removeItem('StorageQuestions');
                     }
+                }
+                else{
+                    this.readQuestions()
                 }
             },
             testUpdates(){
                 if (localStorage.getItem('StorageLastUpdatesLocations')) {
                     try {
                         const date = JSON.parse(localStorage.getItem('StorageLastUpdatesLocations'));
-                        listLocations.forEach(date => {
+                        date.forEach(date => {
                             this.setLocalLastUpdatesLocations(date)
                         });
                     
@@ -224,7 +269,7 @@
                 if (localStorage.getItem('StorageLastUpdatesQuestions')) {
                     try {
                         const date = JSON.parse(localStorage.getItem('StorageLastUpdatesQuestions'));
-                        listLocations.forEach(question => {
+                        date.forEach(question => {
                             this.setLocalLastUpdatesQuestions(question)
                         });
                     
@@ -239,7 +284,7 @@
                 if (localStorage.getItem('StorageLastUpdatesWalks')) {
                     try {
                         const date = JSON.parse(localStorage.getItem('StorageLastUpdatesWalks'));
-                        listLocations.forEach(walk => {
+                        date.forEach(walk => {
                             this.setLocalLastUpdatesWalks(walk)
                         });
                     
@@ -250,6 +295,38 @@
                 else{ 
                     this.setWalksUpdates()
                 }
+            },
+            getUpdateFromServer(){
+                let self=this
+                var query = db.ref('app/lastUpdates/').orderByKey();
+                query.once("value").then(function (snapshot) {
+                    snapshot.forEach(function (childSnapshot) {
+                        if(childSnapshot.key=="questions"){
+                            self.lastUpdatesQuestion=childSnapshot.val()
+                        }
+                        if(childSnapshot.key=="walks"){
+                            self.lastUpdatesWalk=childSnapshot.val()
+                        }
+                        if(childSnapshot.key=="locations"){
+                            self.lastUpdatesLocation=childSnapshot.val()
+                        }
+                    })
+                    self.needUpdate()
+                })
+                
+            },
+            needUpdate(){
+                if(this.lastUpdatesLocation>this.getLastUpdatesLocations){
+                    //trouver celui avec la bonne date
+                    this.readLocations()
+                }
+                if(this.lastUpdatesQuestion>this.getLastUpdatesQuestions){
+                    this.readQuestions()
+                }
+                if(this.lastUpdatesWalk>this.getLastUpdatesWalks){
+                    this.readWalks()
+                }
+
             }
         },
         computed: {
@@ -266,11 +343,12 @@
             ]),
         },
         mounted: function () {
+            
             this.testStorageWalks()
             this.testStorageQuestions()
             this.testStorageLocations()
             this.testUpdates()
-
+         
             if(this.getLastUpdatesLocations==0){
                 this.setLocationUpdates()
                 this.readLocations()
@@ -283,35 +361,8 @@
                 this.setQuestionsUpdates()
                 this.readQuestions()
             }
-         
-            let self=this
-            var query = db.ref('app/lastUpdates/').orderByKey();
-            query.once("value").then(function (snapshot) {
-                snapshot.forEach(function (childSnapshot) {
-                    if(childSnapshot.key=="questions"){
-                        self.lastUpdatesQuestion=childSnapshot.val()
-                    }
-                    if(childSnapshot.key=="walks"){
-                        self.lastUpdatesWalk=childSnapshot.val()
-                    }
-                    if(childSnapshot.key=="locations"){
-                        self.lastUpdatesLocation=childSnapshot.val()
-                    }
-                });
-            });
+            this.getUpdateFromServer()
 
-            if(this.lastUpdatesLocation>this.getLastUpdatesLocations){
-                this.readLocations()
-            }
-            if(this.lastUpdatesQuestion>this.getLastUpdatesQuestions){
-                this.readQuestions()
-            }
-            if(this.lastUpdatesWalk>this.getLastUpdatesWalks){
-                this.readWalks()
-            }
-            console.log("hehe")
-            console.log(this.getBackofficeLocation)
-            console.log(this.getLocalStoreLocations)
         }
     }
 </script>
