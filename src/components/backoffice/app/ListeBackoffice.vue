@@ -136,6 +136,7 @@
                 let self = this
                 localStorage.removeItem('StorageLocations');
                 self.deleteLocalLocations
+                console.log(self.getLocalStoreLocations)
                 var query = db.ref('app/locations/').orderByKey();
                 query.once("value")
                     .then(function (snapshot) {
@@ -154,6 +155,7 @@
                 let self = this
                 localStorage.removeItem('StorageWalks');
                 self.deleteLocalWalks
+                console.log(self.getLocalStoreWalks)
                 var query = db.ref('app/walks/').orderByKey();
                 query.once("value")
                     .then(function (snapshot) {
@@ -173,6 +175,7 @@
                 let self = this
                 localStorage.removeItem('StorageQuestions');
                 self.deleteLocalQuestions
+                console.log(self.getLocalStoreQuestions)
                 var query = db.ref('app/questions/').orderByKey();
                 query.once("value")
                     .then(function (snapshot) {
@@ -188,36 +191,47 @@
                     });
             },
             testStorageLocations(){
+                console.log(localStorage.getItem('StorageLocations'))
                 if (localStorage.getItem('StorageLocations')) {
                     try {
                         if (localStorage.getItem('StorageLocations')!=0) {
+                            self.deleteLocalLocations
                             const listLocations = JSON.parse(localStorage.getItem('StorageLocations'));
                             listLocations.forEach(location => {
                                 this.addLocationToStore(location)
                             });
+                                      console.log(localStorage.getItem('StorageLocations'))
                         }
                         else{
-                             this.readLocations()
+                            localStorage.removeItem('StorageLocations');
+                            this.readLocations()
+                            console.log(localStorage.getItem('StorageLocations'))
+                        
                         }
                     } catch(e) {
                         localStorage.removeItem('StorageLocations');
                     }
                 }
-                else{
-                    this.readLocations()
-                }
             },
             testStorageWalks(){
+                                console.log(localStorage.getItem('StorageWalks'))
+
                 if (localStorage.getItem('StorageWalks')) {
                     try {
                         if(localStorage.getItem('StorageWalks')!=0){
+                            self.deleteLocalWalks
+
                             const listWalks = JSON.parse(localStorage.getItem('StorageWalks'));
                             listWalks.forEach(walk => {
                                 this.addWalkToStore(walk)
+                                
                             });
+                                      console.log(localStorage.getItem('StorageWalks'))
                         }
                         else{
+                            localStorage.removeItem('StorageWalks');
                             this.readWalks()
+                            console.log(localStorage.getItem('StorageWalks'))
                         }
                         
                     
@@ -225,14 +239,13 @@
                         localStorage.removeItem('StorageWalks');
                     }
                 }
-                else{
-                    this.readWalks()
-                }
             },
             testStorageQuestions(){
+                console.log(localStorage.getItem('StorageQuestions'))
                 if (localStorage.getItem('StorageQuestions')) {
                     try {
                         if(localStorage.getItem('StorageQuestions')!=0){
+                            self.deleteLocalQuestions
                             const listQuestions = JSON.parse(localStorage.getItem('StorageQuestions'));
                             listQuestions.forEach(question => {
                                 this.addQuestionToStore(question)
@@ -240,6 +253,7 @@
                               console.log(localStorage.getItem('StorageQuestions'))
                         }
                         else{
+                             localStorage.removeItem('StorageQuestions');
                             this.readQuestions()
                               console.log(localStorage.getItem('StorageQuestions'))
                         }
@@ -248,9 +262,6 @@
                     } catch(e) {
                         localStorage.removeItem('StorageQuestions');
                     }
-                }
-                else{
-                    this.readQuestions()
                 }
             },
             testUpdates(){
@@ -332,12 +343,11 @@
                 
             },
             needUpdate(){
+                console.log("date update")
                 console.log(this.lastUpdatesLocation)
-                console.log(this.lastUpdatesQuestion)
-                console.log(this.lastUpdatesWalk)
+                console.log(this.getLastUpdatesLocations)
                 if(this.lastUpdatesLocation>this.getLastUpdatesLocations){
                     console.log("coucou")
-                    //trouver celui avec la bonne date
                     this.updateLocation(this.lastUpdatesLocation)
                 }
                 if(this.lastUpdatesQuestion>this.getLastUpdatesQuestions){
@@ -348,7 +358,6 @@
                     console.log("ff")
                     this.updateWalk(this.lastUpdatesWalk)
                 }
-
             },
             updateLocation(date){
                 let self=this
@@ -395,19 +404,12 @@
                     snapshot.forEach(function (childSnapshot) {
                         childSnapshot.forEach(function(child){
                             if(child.key=="lastUpdate" && child.val()==date){
-                                //probleme ici : ne supprimer pas l'ancien car n'est plus le meme
-                                console.log(self.getLocalStoreQuestions)
-                                console.log(childSnapshot.val())
                                 self.deleteQuestionFromStore(childSnapshot.val())
-                                console.log(self.getLocalStoreQuestions)
                                 self.addQuestionToStore(childSnapshot.val())
                                 localStorage.removeItem('StorageQuestions');
-                                console.log(localStorage.getItem('StorageQuestions'))
-                                console.log(self.getLocalStoreQuestions)
                                 const stored = self.getLocalStoreQuestions
                                 const parsed = JSON.stringify(stored); 
                                 localStorage.setItem('StorageQuestions', parsed);
-                                console.log(localStorage.getItem('StorageQuestions'))
                             }
                         })
                     })

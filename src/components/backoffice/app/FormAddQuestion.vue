@@ -79,11 +79,13 @@ export default {
             wrongAnswer3: null,
             locations:[],
             locationQuestion:null,
-            description:null
+            description:null,
+            maxID:0
         }
     },
     mounted:function(){
       this.readLocation()
+      this.readID()
     },
     methods:{
       ... mapActions([
@@ -93,7 +95,7 @@ export default {
         let self=this
         self.photos = event.target.files[0]
       },
-      readLocation(){
+    readLocation(){
         let self=this
         var query =  db.ref('app/locations/').orderByKey();
         query.once("value")
@@ -103,8 +105,23 @@ export default {
             });
         });
 
-        },
-      checkForm(e){
+    },
+    readID(){
+        let self=this
+        var query =  db.ref('app/questions/').orderByKey();
+        query.once("value")
+        .then(function(snapshot) {
+            snapshot.forEach(function(childSnapshot) {
+                childSnapshot.forEach(function(child) {
+                    if(child.key=="id" && child.val()>self.maxID){
+                        self.maxID=child.val()+1
+                    }
+                });
+            });
+        });
+
+    },
+    checkForm(e){
         this.errors = [];
 
         if (!this.nameQuestion) {
@@ -139,15 +156,16 @@ export default {
                 wrongAnswer2: self.wrongAnswer2,
                 wrongAnswer3: self.wrongAnswer3,
                 description: self.description,
-                lastUpdates:date
+                lastUpdates:date,
+                id:self.maxID
             };
             var updates = {};
             updates[self.nameQuestion] = postData;
             db.ref('app/questions').update(updates);
             var data={
-                            questions : date
-                        }
-                db.ref('app/lastUpdates').update(data);
+                questions : date
+            }
+            db.ref('app/lastUpdates').update(data);
             self.setActivePageBackoffice('ListeBackoffice')
         }
     }

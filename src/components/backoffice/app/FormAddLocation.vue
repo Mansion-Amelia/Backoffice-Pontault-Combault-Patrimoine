@@ -85,11 +85,13 @@ export default {
           categories: [],
           url: null,
           latitudeLocation: null,
-          longitudeLocation: null
+          longitudeLocation: null,
+          maxID:0
         }
     },
     mounted:function(){
       this.readCategory()
+      this.readID()
     },
     methods:{
       ... mapActions([
@@ -109,6 +111,21 @@ export default {
             });
         });
       },
+      readID(){
+        let self=this
+        var query =  db.ref('app/locations/').orderByKey();
+        query.once("value")
+        .then(function(snapshot) {
+            snapshot.forEach(function(childSnapshot) {
+                childSnapshot.forEach(function(child) {
+                    if(child.key=="id" && child.val()>self.maxID){
+                        self.maxID=child.val()+1
+                    }
+                });
+            });
+        });
+
+    },
       checkForm(e){
         this.errors = [];
 
@@ -143,7 +160,7 @@ export default {
             }, function(error) {
             }, function() {
             uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-                self.url=downloadURL;
+                self.url=downloadURL.toDataURL('image/jpeg', 1.0);
                 let date=new Date().toLocaleString()
                 var postData = {
                 name: self.nameLocation,
@@ -155,7 +172,8 @@ export default {
                     1: self.longitudeLocation
                 },
                 photos:self.url,
-                lastUpdates:date
+                lastUpdates:date,
+                id:self.maxID
                 };
                 var updates = {};
                 updates[self.nameLocation] = postData;

@@ -96,6 +96,7 @@ export default {
       this.latitudeLocation=this.location.gps[0]
       this.longitudeLocation=this.location.gps[1]
       this.photos=this.location.photos
+      this.id=this.location.id
     },
     methods:{
       ... mapActions([
@@ -160,7 +161,8 @@ export default {
                                 1: self.longitudeLocation
                             },
                             photos:self.url,
-                            lastUpdate:date
+                            lastUpdate:date,
+                            id:self.id
                         };
                         var updates = {};
                         updates[self.nameLocation] = postData;
@@ -194,7 +196,8 @@ export default {
                                     1: self.longitudeLocation
                                 },
                                 photos:self.url,
-                                lastUpdate:date
+                                lastUpdate:date,
+                                 id:self.id
                             };
                             var updates = {};
                             updates[self.nameLocation] = postData;
@@ -222,7 +225,8 @@ export default {
                             1: self.longitudeLocation
                         },
                         photos:self.photos,
-                        lastUpdate:date
+                        lastUpdate:date,
+                         id:self.id
                     };
                     var updates = {};
                     updates[self.nameLocation] = postData;
@@ -246,7 +250,8 @@ export default {
                             1: self.longitudeLocation
                         },
                         photos:self.photos,
-                        lastUpdate:date
+                        lastUpdate:date,
+                         id:self.id
 
                     };
                     var updates = {};

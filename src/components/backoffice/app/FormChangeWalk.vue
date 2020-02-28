@@ -120,6 +120,7 @@ export default {
       this.duration=this.walk.duration
       this.polyline.latlngs=this.walk.gps
       this.locationsWalk=this.walk.locations
+      this.id=this.walk.id
   },
   computed:{
             ... mapGetters([
@@ -232,7 +233,8 @@ export default {
                                 photos:self.url,
                                 duration:self.duration,
                                 distance:self.distance,
-                                lastUpdate:date
+                                lastUpdate:date,
+                                 id:self.id
                             };
                             var updates = {};
                             updates[self.nameWalk] = postData;
@@ -260,7 +262,8 @@ export default {
                                 photos:self.url,
                                 duration:self.duration,
                                 distance:self.distance,
-                                lastUpdate:date
+                                lastUpdate:date,
+                                 id:self.id
                             };
                             var updates = {};
                             updates[self.nameWalk] = postData;
@@ -282,7 +285,8 @@ export default {
                             photos:self.photos,
                             duration:self.duration,
                             distance:self.distance,
-                            lastUpdate:date
+                            lastUpdate:date,
+                             id:self.id
                     };
                     var updates = {};
                     updates[self.nameWalk] = postData;
@@ -304,7 +308,8 @@ export default {
                             photos:self.photos,
                             duration:self.duration,
                             distance:self.distance,
-                            lastUpdate:date
+                            lastUpdate:date,
+                             id:self.id
                         };
                         var updates = {};
                         updates[self.nameWalk] = postData;
