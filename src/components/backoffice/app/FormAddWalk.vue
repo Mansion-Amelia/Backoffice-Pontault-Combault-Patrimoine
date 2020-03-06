@@ -122,140 +122,138 @@ export default {
     ... mapActions([
                 'setActivePageBackoffice'
         ]),
-    loadTextFromFile(ev) {
-      const file = ev.target.files[0];
-      const reader = new FileReader();
-      let self = this
-      reader.onload = function(e) { 
-        const datas = e.target.result
-        let json = JSON.parse(datas);
-        self.polyline.latlngs = [];
-        for (let i = 0; i < json.features.length; i++) {
-            self.polyline.latlngs.push(
-                [json.features[i].geometry.coordinates[1],json.features[i].geometry.coordinates[0]]
-            )
-        }
-        self.polyline.latlngs.push(
-            [json.features[0].geometry.coordinates[1],json.features[0].geometry.coordinates[0]]
-
-        )
-      };
-      reader.readAsText(file);
-    },
-    processFile(event) {
-        var files   = event.target.files[0];
-        if (files) {
-            if ( /\.(jpe?g|png|gif)$/i.test(files.name) ) {
-                var reader = new FileReader();
-                var image = document.getElementById('imgp');
-                var preview = document.getElementById('preview');
-                let self= this;
-                var promise = new Promise(function(resolve, reject) {
-                    reader.addEventListener("load", function(){
-                        image.setAttribute("src", this.result);
-                        resolve(this.result);
-                    }, true);
-                    reader.readAsDataURL(files);
-                });
-                promise.then(function(event) {
-                    self.photos=event;
-                })  
+        loadTextFromFile(ev) {
+        const file = ev.target.files[0];
+        const reader = new FileReader();
+        let self = this
+        reader.onload = function(e) { 
+            const datas = e.target.result
+            let json = JSON.parse(datas);
+            self.polyline.latlngs = [];
+            for (let i = 0; i < json.features.length; i++) {
+                self.polyline.latlngs.push(
+                    [json.features[i].geometry.coordinates[1],json.features[i].geometry.coordinates[0]]
+                )
             }
-        }
-    },  
-    removechoice(choice){
-        this.locationsWalk =this.locationsWalk.filter(function(value, index, arr){
-              return value!=choice
-        });
-    },
-    readLocation(){
-        let self=this
-        var query =  db.ref('app/locations/').orderByKey();
-        query.once("value").then(function(snapshot) {
-                snapshot.forEach(function(childSnapshot) {
-                    self.locations.push(childSnapshot.key);
+            self.polyline.latlngs.push(
+                [json.features[0].geometry.coordinates[1],json.features[0].geometry.coordinates[0]]
+
+            )
+        };
+        reader.readAsText(file);
+        },
+        processFile(event) {
+            var files   = event.target.files[0];
+            if (files) {
+                if ( /\.(jpe?g|png|gif)$/i.test(files.name) ) {
+                    var reader = new FileReader();
+                    var image = document.getElementById('imgp');
+                    var preview = document.getElementById('preview');
+                    let self= this;
+                    var promise = new Promise(function(resolve, reject) {
+                        reader.addEventListener("load", function(){
+                            image.setAttribute("src", this.result);
+                            resolve(this.result);
+                        }, true);
+                        reader.readAsDataURL(files);
+                    });
+                    promise.then(function(event) {
+                        self.photos=event;
+                    })  
+                }
+            }
+        },  
+        removechoice(choice){
+            this.locationsWalk =this.locationsWalk.filter(function(value, index, arr){
+                return value!=choice
             });
-        });
-    },
-    readCategory(){
-        let self=this
-        var query =  db.ref('app/categories/').orderByKey();
-        query.once("value").then(function(snapshot) {
-            snapshot.forEach(function(childSnapshot) {
-                self.categories.push(childSnapshot.val());
-            });
-        });
-    },
-    checkFormAddWalk(){
-        const present = this.locationsWalk.filter((item) => item == this.choiceLocationAddWalk[0])
-        if(present.length===0){
-          this.locationsWalk.push(this.choiceLocationAddWalk[0])
-        } 
-    },
-    readID(){
-        let self=this
-        var query =  db.ref('app/walks/').orderByKey();
-        query.once("value")
-        .then(function(snapshot) {
-            snapshot.forEach(function(childSnapshot) {
-                childSnapshot.forEach(function(child) {
-                    if(child.key=="id" && child.val()>self.maxID){
-                        self.maxID=child.val()+1
-                    }
+        },
+        readLocation(){
+            let self=this
+            var query =  db.ref('app/locations/').orderByKey();
+            query.once("value").then(function(snapshot) {
+                    snapshot.forEach(function(childSnapshot) {
+                        self.locations.push(childSnapshot.key);
                 });
             });
-        });
+        },
+        readCategory(){
+            let self=this
+            var query =  db.ref('app/categories/').orderByKey();
+            query.once("value").then(function(snapshot) {
+                snapshot.forEach(function(childSnapshot) {
+                    self.categories.push(childSnapshot.val());
+                });
+            });
+        },
+        checkFormAddWalk(){
+            const present = this.locationsWalk.filter((item) => item == this.choiceLocationAddWalk[0])
+            if(present.length===0){
+                this.locationsWalk.push(this.choiceLocationAddWalk[0])
+            } 
+        },
+        readID(){
+            let self=this
+            var query =  db.ref('app/walks/').orderByKey();
+            query.once("value").then(function(snapshot) {
+                snapshot.forEach(function(childSnapshot) {
+                    childSnapshot.forEach(function(child) {
+                        if(child.key=="id" && child.val()>self.maxID){
+                            self.maxID=child.val()+1
+                        }
+                    });
+                });
+            });
+        },
+        checkForm(e){
+            this.errors = [];
 
-    },
-    checkForm(e){
-        this.errors = [];
-
-        if (!this.nameWalk) {
-            this.errors.push("Nom de la balade obligatoire.");
-        }
-         if (!this.description) {
-            this.errors.push('Description obligatoire.');
-        } 
-         if (this.locationsWalk.length==0) {
-            this.errors.push('Lieux obligatoires.');
-        } 
-        if (this.polyline.latlngs.length==0) {
-            this.errors.push('Tracé obligatoire.');
-        } 
-        if (!this.photos) {
-            this.errors.push('Image obligatoire.');
-        } 
-        if (!this.duration) {
-            this.errors.push('Durée obligatoire.');
-        } 
-        if (!this.distance) {
-            this.errors.push('Distance obligatoire.');
-        } 
-        if (!this.errors.length) {
-             const self = this
-                    let date=new Date().toLocaleString()
-                    var postData = {
-                        name: self.nameWalk,
-                        description: self.description,
-                        locations:self.locationsWalk,
-                        gps: self.polyline.latlngs,
-                        photos:self.photos,
-                        duration:self.duration,
-                        distance:self.distance,
-                        lastUpdates:date,
-                        id:self.maxID
-                    };
-                    var updates = {};
-                    updates[self.nameWalk] = postData;
-                    db.ref('app/walks').update(updates);
-                    var data={
-                        walks : date
-                    }
+            if (!this.nameWalk) {
+                this.errors.push("Nom de la balade obligatoire.");
+            }
+            if (!this.description) {
+                this.errors.push('Description obligatoire.');
+            } 
+            if (this.locationsWalk.length==0) {
+                this.errors.push('Lieux obligatoires.');
+            } 
+            if (this.polyline.latlngs.length==0) {
+                this.errors.push('Tracé obligatoire.');
+            } 
+            if (!this.photos) {
+                this.errors.push('Image obligatoire.');
+            } 
+            if (!this.duration) {
+                this.errors.push('Durée obligatoire.');
+            } 
+            if (!this.distance) {
+                this.errors.push('Distance obligatoire.');
+            } 
+            if (!this.errors.length) {
+                const self = this
+                let date=new Date().toLocaleString()
+                var postData = {
+                    name: self.nameWalk,
+                    description: self.description,
+                    locations:self.locationsWalk,
+                    gps: self.polyline.latlngs,
+                    photos:self.photos,
+                    duration:self.duration,
+                    distance:self.distance,
+                    lastUpdates:date,
+                    id:self.maxID
+                };
+                var updates = {};
+                updates[self.nameWalk] = postData;
+                db.ref('app/walks').update(updates);
+                var data={
+                    walks : date
+                }
                 db.ref('app/lastUpdates').update(data);
                 self.setActivePageBackoffice('ListeBackoffice')    
+            }
+            e.preventDefault();
         }
-        e.preventDefault();
-      }
     }
 }
 </script>
