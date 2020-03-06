@@ -13,7 +13,7 @@
             </div>
             <b-collapse id="accordion-1" accordion="my-accordion" role="tabpanel">
                 <b-card-body>
-                    <LocationBoxBackoffice v-for="location in getLocalStoreLocations" :key="location.name" :location='location'></LocationBoxBackoffice>
+                    <LocationBoxBackoffice v-for="location in getBackofficeLocation" :key="location.name" :location='location'></LocationBoxBackoffice>
                 </b-card-body>
             </b-collapse>
         </b-card>
@@ -29,7 +29,7 @@
             </div>
             <b-collapse id="accordion-2" accordion="my-accordion" role="tabpanel">
                 <b-card-body>
-                    <BaladeBoxBackoffice v-for="walk in getLocalStoreWalks" :key="walk.name" :walk='walk'></BaladeBoxBackoffice>
+                    <BaladeBoxBackoffice v-for="walk in getBackofficeWalk" :key="walk.name" :walk='walk'></BaladeBoxBackoffice>
                 </b-card-body>
             </b-collapse>
         </b-card>
@@ -47,7 +47,7 @@
             </div>
             <b-collapse id="accordion-3" accordion="my-accordion" role="tabpanel">
                 <b-card-body>
-                    <QuestionBoxBackoffice v-for="question in getLocalStoreQuestions" :key="question.name" :question='question'></QuestionBoxBackoffice>
+                    <QuestionBoxBackoffice v-for="question in getBackofficeQuestion" :key="question.name" :question='question'></QuestionBoxBackoffice>
                 </b-card-body>
             </b-collapse>
         </b-card>
@@ -85,10 +85,7 @@
                 errors: [],
                 locations: [],
                 walks: [],
-                questions:[],
-                lastUpdatesLocation:null,
-                lastUpdatesQuestion:null,
-                lastUpdatesWalk:null,
+                questions:[]
             }
         },
         firebase: {
@@ -99,358 +96,56 @@
                 'setActivePageBackoffice',
                 'setBackofficeLocation',
                 'setBackofficeWalk',
-                'setBackofficeQuestion',
-                'addWalkToStore',
-                'addQuestionToStore',
-                'addLocationToStore',
-                'setLocalLastUpdatesLocations',
-                'setLocalLastUpdatesQuestions',
-                'setLocalLastUpdatesWalks',
-                'deleteLocalLocations',
-                'deleteLocalWalks',
-                'deleteLocalQuestions',
-                'deleteLocationFromStore',
-                'deleteQuestionFromStore',
-                'deleteWalkFromStore'
+                'setBackofficeQuestion'
             ]),
-            setLocationUpdates(){
-                let date=new Date().toLocaleString()
-                this.setLocalLastUpdatesLocations(date)
-                const parsed = JSON.stringify(this.getLastUpdatesLocations); 
-                localStorage.setItem('StorageLastUpdatesLocations', parsed);
-            },
-            setQuestionsUpdates(){
-                let date=new Date().toLocaleString()
-                this.setLocalLastUpdatesQuestions(date)
-                const parsed = JSON.stringify(this.getLastUpdatesQuestions); 
-                localStorage.setItem('StorageLastUpdatesQuestions', parsed);
-            },
-            setWalksUpdates(){
-                let date=new Date().toLocaleString()
-                this.setLocalLastUpdatesWalks(date)
-                const parsed = JSON.stringify(this.getLastUpdatesWalks); 
-                localStorage.setItem('StorageLastUpdatesWalks', parsed);
-            },
             readLocations() {
-                 console.log("read location")
                 let self = this
-                localStorage.removeItem('StorageLocations');
-                self.deleteLocalLocations
-                console.log(self.getLocalStoreLocations)
                 var query = db.ref('app/locations/').orderByKey();
                 query.once("value")
                     .then(function (snapshot) {
                         snapshot.forEach(function (childSnapshot) {
-                            const parsed = JSON.stringify(childSnapshot.val()); 
-                            self.addLocationToStore(childSnapshot.val())
-                            localStorage.setItem('StorageLocations', parsed);
+                            self.locations.push(childSnapshot.val());
                         });
-                        self.locations.push(self.getLocalStoreQuestions);
-                        self.setLocationUpdates()
                         self.setBackofficeLocation(self.locations)
-                })
+                    });
             },
             readWalks() {
-                console.log("read walk")
                 let self = this
-                localStorage.removeItem('StorageWalks');
-                self.deleteLocalWalks
-                console.log(self.getLocalStoreWalks)
                 var query = db.ref('app/walks/').orderByKey();
                 query.once("value")
                     .then(function (snapshot) {
-                         snapshot.forEach(function (childSnapshot) {
-                            const parsed = JSON.stringify(childSnapshot.val()); 
-                            self.addWalkToStore(childSnapshot.val())
-                            localStorage.setItem('StorageWalks', parsed);
+                        snapshot.forEach(function (childSnapshot) {
+                            self.walks.push(childSnapshot.val());
                         });
-                        self.walks=self.getLocalStoreWalks;
-                        self.setWalksUpdates()    
                         self.setBackofficeWalk(self.walks)
 
                     });
             },
             readQuestions() {
-                console.log("read question")
                 let self = this
-                localStorage.removeItem('StorageQuestions');
-                self.deleteLocalQuestions
-                console.log(self.getLocalStoreQuestions)
                 var query = db.ref('app/questions/').orderByKey();
                 query.once("value")
                     .then(function (snapshot) {
                         snapshot.forEach(function (childSnapshot) {
-                            const parsed = JSON.stringify(childSnapshot.val()); 
-                            self.addQuestionToStore(childSnapshot.val())
-                            localStorage.setItem('StorageQuestions', parsed);
+                            self.questions.push(childSnapshot.val());
                         });
-                        self.questions=self.getLocalStoreQuestions;
-                        self.setQuestionsUpdates()
                         self.setBackofficeQuestion(self.questions)
 
                     });
             },
-            testStorageLocations(){
-                console.log(localStorage.getItem('StorageLocations'))
-                if (localStorage.getItem('StorageLocations')) {
-                    try {
-                        if (localStorage.getItem('StorageLocations')!=0) {
-                            self.deleteLocalLocations
-                            const listLocations = JSON.parse(localStorage.getItem('StorageLocations'));
-                            listLocations.forEach(location => {
-                                this.addLocationToStore(location)
-                            });
-                                      console.log(localStorage.getItem('StorageLocations'))
-                        }
-                        else{
-                            localStorage.removeItem('StorageLocations');
-                            this.readLocations()
-                            console.log(localStorage.getItem('StorageLocations'))
-                        
-                        }
-                    } catch(e) {
-                        localStorage.removeItem('StorageLocations');
-                    }
-                }
-            },
-            testStorageWalks(){
-                                console.log(localStorage.getItem('StorageWalks'))
 
-                if (localStorage.getItem('StorageWalks')) {
-                    try {
-                        if(localStorage.getItem('StorageWalks')!=0){
-                            self.deleteLocalWalks
-
-                            const listWalks = JSON.parse(localStorage.getItem('StorageWalks'));
-                            listWalks.forEach(walk => {
-                                this.addWalkToStore(walk)
-                                
-                            });
-                                      console.log(localStorage.getItem('StorageWalks'))
-                        }
-                        else{
-                            localStorage.removeItem('StorageWalks');
-                            this.readWalks()
-                            console.log(localStorage.getItem('StorageWalks'))
-                        }
-                        
-                    
-                    } catch(e) {
-                        localStorage.removeItem('StorageWalks');
-                    }
-                }
-            },
-            testStorageQuestions(){
-                console.log(localStorage.getItem('StorageQuestions'))
-                if (localStorage.getItem('StorageQuestions')) {
-                    try {
-                        if(localStorage.getItem('StorageQuestions')!=0){
-                            self.deleteLocalQuestions
-                            const listQuestions = JSON.parse(localStorage.getItem('StorageQuestions'));
-                            listQuestions.forEach(question => {
-                                this.addQuestionToStore(question)
-                            });
-                              console.log(localStorage.getItem('StorageQuestions'))
-                        }
-                        else{
-                             localStorage.removeItem('StorageQuestions');
-                            this.readQuestions()
-                              console.log(localStorage.getItem('StorageQuestions'))
-                        }
-                      
-                    
-                    } catch(e) {
-                        localStorage.removeItem('StorageQuestions');
-                    }
-                }
-            },
-            testUpdates(){
-                if (localStorage.getItem('StorageLastUpdatesLocations')) {
-                    try {
-                        if(localStorage.getItem('StorageLastUpdatesLocations')!=0){
-                            const date = JSON.parse(localStorage.getItem('StorageLastUpdatesLocations'));
-                            date.forEach(date => {
-                                this.setLocalLastUpdatesLocations(date)
-                            });
-                        }
-                        else{
-                             this.setLocationUpdates()
-                        }
-                    
-                    } catch(e) {
-                        localStorage.removeItem('StorageLastUpdatesLocations');
-                    }
-                }
-                else{ 
-                    this.setLocationUpdates()
-                }
-                if (localStorage.getItem('StorageLastUpdatesQuestions')) {
-                    try {
-                        if(localStorage.getItem('StorageLastUpdatesQuestions')!=0){
-                            const date = JSON.parse(localStorage.getItem('StorageLastUpdatesQuestions'));
-                            date.forEach(question => {
-                                this.setLocalLastUpdatesQuestions(question)
-                            });
-                        }
-                        else{
-                            this.setQuestionsUpdates()
-                        }
-                    } catch(e) {
-                        localStorage.removeItem('StorageLastUpdatesQuestions');
-                    }
-                }
-                else{ 
-                    this.setQuestionsUpdates()
-                }
-
-                if (localStorage.getItem('StorageLastUpdatesWalks')) {
-                    try {
-                        if(localStorage.getItem('StorageLastUpdatesWalks')){
-                            const date = JSON.parse(localStorage.getItem('StorageLastUpdatesWalks'));
-                            date.forEach(walk => {
-                                this.setLocalLastUpdatesWalks(walk)
-                            });
-                        }
-                        else{
-                             this.setWalksUpdates()
-                        }
-                    
-                    } catch(e) {
-                        localStorage.removeItem('StorageLastUpdatesWalks');
-                    }
-                }
-                else{ 
-                    this.setWalksUpdates()
-                }
-            },
-            getUpdateFromServer(){
-                let self=this
-                var query = db.ref('app/lastUpdates/').orderByKey();
-                query.once("value").then(function (snapshot) {
-                    snapshot.forEach(function (childSnapshot) {
-                        if(childSnapshot.key=="questions"){
-                            self.lastUpdatesQuestion=childSnapshot.val()
-                        }
-                        if(childSnapshot.key=="walks"){
-                            self.lastUpdatesWalk=childSnapshot.val()
-                        }
-                        if(childSnapshot.key=="locations"){
-                            self.lastUpdatesLocation=childSnapshot.val()
-                        }
-                    })
-                    self.needUpdate()
-                })
-                
-            },
-            needUpdate(){
-                console.log("date update")
-                console.log(this.lastUpdatesLocation)
-                console.log(this.getLastUpdatesLocations)
-                if(this.lastUpdatesLocation>this.getLastUpdatesLocations){
-                    console.log("coucou")
-                    this.updateLocation(this.lastUpdatesLocation)
-                }
-                if(this.lastUpdatesQuestion>this.getLastUpdatesQuestions){
-                    console.log("pouet")
-                    this.updateQuestion(this.lastUpdatesQuestion)
-                }
-                if(this.lastUpdatesWalk>this.getLastUpdatesWalks){
-                    console.log("ff")
-                    this.updateWalk(this.lastUpdatesWalk)
-                }
-            },
-            updateLocation(date){
-                let self=this
-                var query = db.ref('app/locations/').orderByKey();
-                query.once("value").then(function (snapshot) {
-                    snapshot.forEach(function (childSnapshot) {
-                        childSnapshot.forEach(function(child){
-                            if(child.key=="lastUpdate" && child.val()==date){
-                                self.deleteLocationFromStore(childSnapshot.val())
-                                self.addLocationToStore(childSnapshot.val())
-                                localStorage.removeItem('StorageLocations');
-                                const stored = self.getLocalStoreLocation
-                                const parsed = JSON.stringify(stored); 
-                                localStorage.setItem('StorageLocations', parsed);
-                            }
-                        })
-                    })
-                
-                })
-            },
-            updateWalk(date){
-                let self=this
-                var query = db.ref('app/walks/').orderByKey();
-                query.once("value").then(function (snapshot) {
-                    snapshot.forEach(function (childSnapshot) {
-                        childSnapshot.forEach(function(child){
-                            if(child.key=="lastUpdate" && child.val()==date){
-                                self.deleteWalkFromStore(childSnapshot.val())
-                                self.addWalkToStore(childSnapshot.val())
-                                localStorage.removeItem('StorageWalks');
-                                const stored = self.getLocalStoreWalks
-                                const parsed = JSON.stringify(stored); 
-                                localStorage.setItem('StorageWalks', parsed);
-                            }
-                        })
-                    })
-                
-                })
-            },
-            updateQuestion(date){
-                let self=this
-                var query = db.ref('app/questions/').orderByKey();
-                query.once("value").then(function (snapshot) {
-                    snapshot.forEach(function (childSnapshot) {
-                        childSnapshot.forEach(function(child){
-                            if(child.key=="lastUpdate" && child.val()==date){
-                                self.deleteQuestionFromStore(childSnapshot.val())
-                                self.addQuestionToStore(childSnapshot.val())
-                                localStorage.removeItem('StorageQuestions');
-                                const stored = self.getLocalStoreQuestions
-                                const parsed = JSON.stringify(stored); 
-                                localStorage.setItem('StorageQuestions', parsed);
-                            }
-                        })
-                    })
-                
-                })
-            },
         },
         computed: {
             ...mapGetters([
                 'getBackofficeLocation',
                 'getBackofficeWalk',
-                'getBackofficeQuestion',
-                'getLocalStoreQuestions',
-                'getLocalStoreWalks',
-                'getLocalStoreLocations',
-                'getLastUpdatesLocations',
-                'getLastUpdatesWalks',
-                'getLastUpdatesQuestions',
+                'getBackofficeQuestion'
             ]),
         },
         mounted: function () {
-            
-            this.testStorageWalks()
-            this.testStorageQuestions()
-            this.testStorageLocations()
-            this.testUpdates()
-         
-            if(this.getLastUpdatesLocations==0){
-                this.setLocationUpdates()
-                this.readLocations()
-            }
-            if(this.getLastUpdatesWalks==0){
-                this.setWalksUpdates()
-                this.readWalks()
-            }
-            if(this.getLastUpdatesQuestions==0){
-                this.setQuestionsUpdates()
-                this.readQuestions()
-            }
-            this.getUpdateFromServer()
-
+            this.readLocations()
+            this.readWalks()
+            this.readQuestions()
         }
     }
 </script>

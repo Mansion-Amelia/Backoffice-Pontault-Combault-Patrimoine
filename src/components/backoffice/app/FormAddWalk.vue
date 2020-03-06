@@ -118,16 +118,9 @@ export default {
       this.readCategory(),
       this.readID()
   },
-   computed: {
-            ...mapGetters([
-                'getPhotoForm',
-               
-            ]),
-        },
   methods:{
     ... mapActions([
-                'setActivePageBackoffice',
-                'setPhotoForm'
+                'setActivePageBackoffice'
         ]),
     loadTextFromFile(ev) {
       const file = ev.target.files[0];
