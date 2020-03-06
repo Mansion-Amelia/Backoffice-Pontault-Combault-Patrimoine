@@ -13,7 +13,7 @@ const state= {
     localStoreQuestions:[],
     localLastUpdatesLocations:[],
     localLastUpdatesQuestions:[],
-    localLastUpdatesWalks:[]
+    localLastUpdatesWalks:[],
 }
 
 const mutations= {

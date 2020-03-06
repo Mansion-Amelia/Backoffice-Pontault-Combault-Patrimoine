@@ -49,6 +49,9 @@
                 <label for="photos">Photo principale</label>
                 <div class="alert alert-blue" role="alert">Veillez à ce que la taille des photos soit adaptée au web pour qu'elles se chargent rapidement lors de la consultation de l'application. Vous pouvez utiliser des sites comme <a href="https://www.iloveimg.com/fr/compresser-image">iloveimg.com</a> qui permettent d'optimiser les images pour le web.</div>
                 <input type="file" id="photos" name="photos" accept="image/png, image/jpeg" @change="processFile($event)">
+                <div id="preview">
+                    <img id="imgp"  src="" />
+                </div>
             </div>
             <div class="form-group">
                 <RichEditorText :description="description"></RichEditorText>
@@ -106,7 +109,8 @@ export default {
       polyline: {
           latlngs: []
       },
-      maxID:0
+      maxID:0,
+       url: null,
     }
   },
   mounted:function(){
@@ -114,9 +118,16 @@ export default {
       this.readCategory(),
       this.readID()
   },
+   computed: {
+            ...mapGetters([
+                'getPhotoForm',
+               
+            ]),
+        },
   methods:{
     ... mapActions([
                 'setActivePageBackoffice',
+                'setPhotoForm'
         ]),
     loadTextFromFile(ev) {
       const file = ev.target.files[0];
@@ -139,31 +150,44 @@ export default {
       reader.readAsText(file);
     },
     processFile(event) {
-      let self=this
-      self.photos = event.target.files[0]
-    },
+        var files   = event.target.files[0];
+        if (files) {
+            if ( /\.(jpe?g|png|gif)$/i.test(files.name) ) {
+                var reader = new FileReader();
+                var image = document.getElementById('imgp');
+                var preview = document.getElementById('preview');
+                let self= this;
+                var promise = new Promise(function(resolve, reject) {
+                    reader.addEventListener("load", function(){
+                        image.setAttribute("src", this.result);
+                        resolve(this.result);
+                    }, true);
+                    reader.readAsDataURL(files);
+                });
+                promise.then(function(event) {
+                    self.photos=event;
+                })  
+            }
+        }
+    },  
     removechoice(choice){
         this.locationsWalk =this.locationsWalk.filter(function(value, index, arr){
               return value!=choice
         });
-
     },
     readLocation(){
-      let self=this
-      var query =  db.ref('app/locations/').orderByKey();
-      query.once("value")
-      .then(function(snapshot) {
-          snapshot.forEach(function(childSnapshot) {
-              self.locations.push(childSnapshot.key);
-          });
-      });
-
+        let self=this
+        var query =  db.ref('app/locations/').orderByKey();
+        query.once("value").then(function(snapshot) {
+                snapshot.forEach(function(childSnapshot) {
+                    self.locations.push(childSnapshot.key);
+            });
+        });
     },
     readCategory(){
         let self=this
         var query =  db.ref('app/categories/').orderByKey();
-        query.once("value")
-        .then(function(snapshot) {
+        query.once("value").then(function(snapshot) {
             snapshot.forEach(function(childSnapshot) {
                 self.categories.push(childSnapshot.val());
             });
@@ -205,7 +229,7 @@ export default {
         if (this.polyline.latlngs.length==0) {
             this.errors.push('Tracé obligatoire.');
         } 
-        if (!this.photos.name) {
+        if (!this.photos) {
             this.errors.push('Image obligatoire.');
         } 
         if (!this.duration) {
@@ -216,33 +240,13 @@ export default {
         } 
         if (!this.errors.length) {
              const self = this
-     
-            let uploadTask = storageRef.child('app/walks/images/'+this.photos.name).put(this.photos);
-            
-            uploadTask.on('state_changed', function(snapshot){
-                var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                uploader.value = progress;
-            }, function(error) {}, function() {
-                uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-                    var canvas = document.createElement("canvas");
-                    var context = canvas.getContext('2d');
-                    context.fillStyle = '#fff';  /// set white fill style
-                    context.fillRect(0, 0, canvas.width, canvas.height);
-                    var base_image = new Image();
-                    base_image.src = downloadURL;
-                    base_image.onload = function(){
-                        context.drawImage(base_image, 100, 100);
-                    }
-                    self.url = canvas.toDataURL("image/jpeg");
-
                     let date=new Date().toLocaleString()
-
                     var postData = {
                         name: self.nameWalk,
                         description: self.description,
                         locations:self.locationsWalk,
                         gps: self.polyline.latlngs,
-                        photos:self.url,
+                        photos:self.photos,
                         duration:self.duration,
                         distance:self.distance,
                         lastUpdates:date,
@@ -252,12 +256,10 @@ export default {
                     updates[self.nameWalk] = postData;
                     db.ref('app/walks').update(updates);
                     var data={
-                            walks : date
-                        }
+                        walks : date
+                    }
                 db.ref('app/lastUpdates').update(data);
-                    self.setActivePageBackoffice('ListeBackoffice')
-                });
-            }); 
+                self.setActivePageBackoffice('ListeBackoffice')    
         }
         e.preventDefault();
       }

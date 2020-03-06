@@ -50,6 +50,9 @@
                 <label for="photos">Photo</label>
                 <div class="alert alert-blue" role="alert">Veillez à ce que la taille des photos soit adaptée au web pour qu'elles se chargent rapidement lors de la consultation de l'application. Vous pouvez utiliser des sites comme <a href="https://www.iloveimg.com/fr/compresser-image">iloveimg.com</a> qui permettent d'optimiser les images pour le web.</div>
                 <input type="file" id="photos" name="photos" accept="image/png, image/jpeg" @change="processFile($event)">
+                <div id="preview">
+                    <img id="imgp"  src="" />
+                </div>
             </div>
             <div @click="checkForm" class="btn btn-primary form-group">Modifier le lieu</div>
             <div class="progress">
@@ -99,57 +102,63 @@ export default {
       this.id=this.location.id
     },
     methods:{
-      ... mapActions([
-                'setActivePageBackoffice',
+        ... mapActions([
+            'setActivePageBackoffice',
         ]),
-      processFile(event) {
-        let self=this
-        self.photos = event.target.files[0]
-      },
-      readCategory(){
-        let self=this
-        var query =  db.ref('app/categories/').orderByKey();
-        query.once("value")
-        .then(function(snapshot) {
-            snapshot.forEach(function(childSnapshot) {
-                self.categories.push(childSnapshot.val());
+        processFile(event) {
+            var files   = event.target.files[0];
+            if (files) {
+                if ( /\.(jpe?g|png|gif)$/i.test(files.name) ) {
+                    var reader = new FileReader();
+                    var image = document.getElementById('imgp');
+                    var preview = document.getElementById('preview');
+                    let self= this;
+                    var promise = new Promise(function(resolve, reject) {
+                        reader.addEventListener("load", function(){
+                            image.setAttribute("src", this.result);
+                            resolve(this.result);
+                        }, true);
+                        reader.readAsDataURL(files);
+                    });
+                    promise.then(function(event) {
+                        self.photos=event;
+                    })  
+                }
+            }
+        },  
+        readCategory(){
+            let self=this
+            var query =  db.ref('app/categories/').orderByKey();
+            query.once("value").then(function(snapshot) {
+                snapshot.forEach(function(childSnapshot) {
+                    self.categories.push(childSnapshot.val());
+                });
             });
-        });
-      },
-      checkForm(e){
-        this.errors = [];
-
-        if (!this.nameLocation) {
-            this.errors.push("Nom du lieu obligatoire.");
-        }
-         if (!this.description) {
-            this.errors.push('Description obligatoire.');
-        } 
-         if (!this.categoryLocation) {
-            this.errors.push('Catégorie obligatoire.');
-        } 
-        if (!this.addressLocation) {
-            this.errors.push('Adresse obligatoire.');
-        } 
-        if (!this.latitudeLocation) {
-            this.errors.push('Latitude obligatoire.');
-        } 
-
-        if (!this.longitudeLocation) {
-            this.errors.push('Longitude obligatoire.');
-        } 
-        if (!this.errors.length) {
-            const self = this
-            if(this.photos.name){
-                if(this.nameLocation==this.location.name){
-                    let uploadTask = storageRef.child('app/locations/images/'+this.photos.name).put(this.photos);
-                    uploadTask.on('state_changed', function(snapshot){
-                    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    uploader.value = progress;
-                    }, function(error) {
-                    }, function() {
-                    uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-                        self.url=downloadURL;
+        },
+        checkForm(e){
+            this.errors = [];
+            if (!this.nameLocation) {
+                this.errors.push("Nom du lieu obligatoire.");
+            }
+            if (!this.description) {
+                this.errors.push('Description obligatoire.');
+            } 
+            if (!this.categoryLocation) {
+                this.errors.push('Catégorie obligatoire.');
+            } 
+            if (!this.addressLocation) {
+                this.errors.push('Adresse obligatoire.');
+            } 
+            if (!this.latitudeLocation) {
+                this.errors.push('Latitude obligatoire.');
+            } 
+            if (!this.longitudeLocation) {
+                this.errors.push('Longitude obligatoire.');
+            } 
+            if (!this.errors.length) {
+                const self = this
+                if(this.photos){
+                    if(this.nameLocation==this.location.name){
                         let date=new Date().toLocaleString()
                         var postData = {
                             name: self.nameLocation,
@@ -160,7 +169,7 @@ export default {
                                 0: self.latitudeLocation, 
                                 1: self.longitudeLocation
                             },
-                            photos:self.url,
+                            photos:self.photos,
                             lastUpdate:date,
                             id:self.id
                         };
@@ -170,21 +179,11 @@ export default {
                         var data={
                             locations : date
                         }
-                    db.ref('app/lastUpdates').update(data);
+                        db.ref('app/lastUpdates').update(data);
                         self.setActivePageBackoffice('ListeBackoffice')
-                    });
-                 });
-                }
-                else{
-                    db.ref('app/locations/'+this.location.name).remove().then(() => {
-                        let uploadTask = storageRef.child('app/locations/images/'+this.photos.name).put(this.photos);
-                        uploadTask.on('state_changed', function(snapshot){
-                        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        uploader.value = progress;
-                        }, function(error) {
-                        }, function() {
-                        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-                            self.url=downloadURL;
+                    }
+                    else{
+                        db.ref('app/locations/'+this.location.name).remove().then(() => {
                             let date=new Date().toLocaleString()
                             var postData = {
                                 name: self.nameLocation,
@@ -195,79 +194,77 @@ export default {
                                     0: self.latitudeLocation, 
                                     1: self.longitudeLocation
                                 },
-                                photos:self.url,
+                                photos:self.photos,
                                 lastUpdate:date,
-                                 id:self.id
+                                id:self.id
                             };
                             var updates = {};
                             updates[self.nameLocation] = postData;
                             db.ref('app/locations').update(updates);
                             var data={
-                            locations : date
-                        }
-                    db.ref('app/lastUpdates').update(data);
+                                locations : date
+                            }
+                            db.ref('app/lastUpdates').update(data);
                             self.setActivePageBackoffice('ListeBackoffice')
-                            });
                         });
-                    })
-                }
-                 
-            }else{
-                if(this.nameLocation==this.location.name){
-                    let date=new Date().toLocaleString()
-                    var postData = {
-                        name: self.nameLocation,
-                        category: self.categoryLocation,
-                        address: self.addressLocation,
-                        description: self.description,
-                        gps:{
-                            0: self.latitudeLocation, 
-                            1: self.longitudeLocation
-                        },
-                        photos:self.photos,
-                        lastUpdate:date,
-                         id:self.id
-                    };
-                    var updates = {};
-                    updates[self.nameLocation] = postData;
-                    db.ref('app/locations').update(updates);
-                    var data={
-                            locations : date
-                        }
-                    db.ref('app/lastUpdates').update(data);
-                    self.setActivePageBackoffice('ListeBackoffice')
+                    }
+                    
                 }
                 else{
-                    db.ref('app/locations/'+this.location.name).remove().then(() => {
+                    if(this.nameLocation==this.location.name){
                         let date=new Date().toLocaleString()
                         var postData = {
-                        name: self.nameLocation,
-                        category: self.categoryLocation,
-                        address: self.addressLocation,
-                        description: self.description,
-                        gps:{
-                            0: self.latitudeLocation, 
-                            1: self.longitudeLocation
-                        },
-                        photos:self.photos,
-                        lastUpdate:date,
-                         id:self.id
-
-                    };
-                    var updates = {};
-                    updates[self.nameLocation] = postData;
-                    db.ref('app/locations').update(updates);
-                    var data={
+                            name: self.nameLocation,
+                            category: self.categoryLocation,
+                            address: self.addressLocation,
+                            description: self.description,
+                            gps:{
+                                0: self.latitudeLocation, 
+                                1: self.longitudeLocation
+                            },
+                            photos:self.photos,
+                            lastUpdate:date,
+                            id:self.id
+                        };
+                        var updates = {};
+                        updates[self.nameLocation] = postData;
+                        db.ref('app/locations').update(updates);
+                        var data={
                             locations : date
                         }
-                    db.ref('app/lastUpdates').update(data);
-                    self.setActivePageBackoffice('ListeBackoffice')
-                    })
-                }    
+                        db.ref('app/lastUpdates').update(data);
+                        self.setActivePageBackoffice('ListeBackoffice')
+                    }
+                    else{
+                        db.ref('app/locations/'+this.location.name).remove().then(() => {
+                            let date=new Date().toLocaleString()
+                            var postData = {
+                                name: self.nameLocation,
+                                category: self.categoryLocation,
+                                address: self.addressLocation,
+                                description: self.description,
+                                gps:{
+                                    0: self.latitudeLocation, 
+                                    1: self.longitudeLocation
+                                },
+                                photos:self.photos,
+                                lastUpdate:date,
+                                id:self.id
+                            };
+                            var updates = {};
+                            updates[self.nameLocation] = postData;
+                            db.ref('app/locations').update(updates);
+                            var data={
+                                locations : date
+                            }
+                            db.ref('app/lastUpdates').update(data);
+                            self.setActivePageBackoffice('ListeBackoffice')
+                        })
+                    }    
+                }
             }
+            e.preventDefault();
         }
-        e.preventDefault();
-      }
     },
     computed:{
             ... mapGetters([
