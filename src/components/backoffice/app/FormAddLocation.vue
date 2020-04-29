@@ -103,15 +103,28 @@ export default {
         processFile(event) {
             var files   = event.target.files[0];
             if (files) {
-                if ( /\.(jpe?g|png|gif)$/i.test(files.name) ) {
+                if ( /\.(jpe?g|png|gif)$/i.test(files.name) && files.size < 1024 * 1024 ) {
                     var reader = new FileReader();
                     var image = document.getElementById('imgp');
                     var preview = document.getElementById('preview');
                     let self= this;
                     var promise = new Promise(function(resolve, reject) {
                         reader.addEventListener("load", function(){
-                            image.setAttribute("src", this.result);
-                            resolve(this.result);
+                            var test = new Image();
+                            test.src = this.result;
+                            test.onload = function () {
+                                var height = this.height;
+                                var width = this.width;
+                                if (height > 1080 || width > 1920) {
+                                    alert("La taille de l'image ne doit pas éxcéder 1920px x 1080px");
+                                }
+                                else{
+                                    image.setAttribute("src", test.src);
+                                    resolve(test.src);
+                                }
+
+                            };
+                            
                         }, true);
                         reader.readAsDataURL(files);
                     });
@@ -119,8 +132,12 @@ export default {
                         self.photos=event;
                     })  
                 }
+                else{
+                     alert("Mauvais format ou la taille du fichier est supérieur à 1 MB")
+                 }
             }
-        },  
+            
+        }, 
         readCategory(){
             let self=this
             var query =  db.ref('app/categories/').orderByKey();
