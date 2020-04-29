@@ -48,7 +48,11 @@ import { db } from '../../../config/db'
             removeWalkCarnet(name) {
                 this.deleteBackofficeWalk(this.walk)
                 db.ref('app/walks/'+name).remove().then(() => {
-            
+                     let date=new Date().toLocaleString()
+                    var data={
+                        walks : date
+                    }
+                    db.ref('app/lastUpdates').update(data);
             })
             },
 
