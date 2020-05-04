@@ -34,7 +34,8 @@
                 <RichEditorText :description="description"></RichEditorText>
             </div>
 
-
+            <label for="GPScoordinates">Coordonnées GPS</label>
+            <div class="alert alert-blue" role="alert">Veillez à ce que  les coordonnées GPS ne soient pas les mêmes qu'un lieu déjà enregistré.</div>
             <div class="form-group row">
                 <div class="col">
                     <label for="latitudeLocation">Latitude</label>
@@ -50,10 +51,10 @@
 
             <div class="form-group">
                 <label for="photos">Photo</label>
-                <div class="alert alert-blue" role="alert">Veillez à ce que la taille des photos soit adaptée au web pour qu'elles se chargent rapidement lors de la consultation de l'application. Vous pouvez utiliser des sites comme <a href="https://www.iloveimg.com/fr/compresser-image">iloveimg.com</a> qui permettent d'optimiser les images pour le web.</div>
+                <div class="alert alert-blue" role="alert">Veillez à ce que la taille des photos soit adaptée au web pour qu'elles se chargent rapidement lors de la consultation de l'application. La photo doit avoir au maximum une résolution de 1920px * 1080px et ne doit pas excéder 1MB. Vous pouvez utiliser des sites comme <a href="https://www.iloveimg.com/fr/compresser-image">iloveimg.com</a> qui permettent d'optimiser les images pour le web.</div>
                 <input type="file" id="photos" name="photos" accept="image/png, image/jpeg" @change="processFile($event)">
                 <div id="preview">
-                    <img id="imgp"  src="" />
+                    <img id="imgp" src="" />
                 </div>
             </div>
 
