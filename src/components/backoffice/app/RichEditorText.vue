@@ -83,7 +83,7 @@
         Image
 
     } from 'tiptap-extensions'
-    import { db, storageRef, storage, firebase } from '../../../config/db'
+    import {storageRef} from '../../../config/db'
 
 
     export default {
@@ -123,7 +123,7 @@
                     onUpdate: ({ getHTML }) => {
                         this.html = getHTML()
                         this.$parent.description = this.html;
-                        console.log(this.$parent)
+                       
                     },
                 }),
                 html: null,
@@ -137,24 +137,61 @@
           
         }, 
          methods: {
-            processFile(event, command) {
-                let self = this
-                self.photos = event.target.files[0]
-                let uploadTask = storageRef.child('app/images/' + self.photos.name).put(self.photos);
-                uploadTask.on('state_changed', function (snapshot) {
-                    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    uploader.value = progress;
-                }, function (error) {
-                }, function () {
-                    uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
-                        self.url = downloadURL;
-                        const src = self.url
-                        if (src !== null) {
-                            command({ src })
-                        }
+            // processFile(event, command) {
+            //     let self = this
+            //     self.photos = event.target.files[0]
+            //     let uploadTask = storageRef.child('app/images/' + self.photos.name).put(self.photos);
+            //     uploadTask.on('state_changed', function (snapshot) {
+            //         var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            //         uploader.value = progress;
+            //     }, function (error) {
+            //     }, function () {
+            //         uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+            //             self.url = downloadURL;
+            //             const src = self.url
+            //             if (src !== null) {
+            //                 command({ src })
+            //             }
+            //         });
+            //     });
+            // },
+             processFile(event, command) {
+            var files   = event.target.files[0];
+           
+            if (files) {
+                if ( /\.(jpe?g|png|gif)$/i.test(files.name) && files.size < 1024 * 1024 ) {
+                    var reader = new FileReader(); 
+                    let self= this;
+                    var promise = new Promise(function(resolve, reject) {
+                        reader.addEventListener("load", function(){
+                            var test = new Image();
+                            test.src = this.result;
+                            var height = this.height;
+                            var width = this.width;
+                            if (height > 1080 || width > 1920) {
+                                alert("La taille de l'image ne doit pas éxcéder 1920px x 1080px");
+                            }
+                            else{
+                                const src = test.src
+                                    command({ src })
+                                
+                            }
+
+                            
+                        }, true);
+                        reader.readAsDataURL(files);
                     });
-                });
-            },
+                    promise.then(function(event) {
+
+                        command({ event })
+                    })  
+                }
+                else{
+                     alert("Mauvais format ou la taille du fichier est supérieur à 1 MB")
+                 }
+            }
+            
+        }, 
             showLinkMenu(attrs) {
                 this.linkUrl = attrs.href
                 this.linkMenuIsActive = true
