@@ -47,7 +47,11 @@
             </div>
             <div class="form-group">
                 <label for="photos">Photo principale</label>
-                <div class="alert alert-blue" role="alert">Veillez à ce que la taille des photos soit adaptée au web pour qu'elles se chargent rapidement lors de la consultation de l'application. Vous pouvez utiliser des sites comme <a href="https://www.iloveimg.com/fr/compresser-image">iloveimg.com</a> qui permettent d'optimiser les images pour le web.</div><input type="file" id="photos" name="photos" accept="image/png, image/jpeg" @change="processFile($event)">
+                <div class="alert alert-blue" role="alert">Veillez à ce que la taille des photos soit adaptée au web pour qu'elles se chargent rapidement lors de la consultation de l'application. La photo doit avoir au maximum une résolution de 1920px * 1080px et ne doit pas excéder 1MB. Vous pouvez utiliser des sites comme <a href="https://www.iloveimg.com/fr/compresser-image">iloveimg.com</a> qui permettent d'optimiser les images pour le web.</div>
+                <input type="file" id="photos" name="photos" accept="image/png, image/jpeg" @change="processFile($event)">
+                <div id="preview">
+                    <img id="imgp"  src="" />
+                </div>
             </div>
             <div class="form-group">
                 <RichEditorText :description="description"></RichEditorText>
@@ -66,7 +70,7 @@
             </div>
 
             <div class="form-group">
-                <div @click="checkForm" class="form-group btn btn-primary "> Modifier la balade</div>
+                <div @click="checkForm" class="form-group btn btn-primary ">Modifier la balade</div>
             </div>
             <div class="progress">
                 <progress id="uploader" value="0" max="100">0%</progress>
@@ -120,6 +124,7 @@ export default {
       this.duration=this.walk.duration
       this.polyline.latlngs=this.walk.gps
       this.locationsWalk=this.walk.locations
+      this.id=this.walk.id
   },
   computed:{
             ... mapGetters([
@@ -127,185 +132,210 @@ export default {
             ]),
         },
   methods:{
-    ... mapActions([
-                'setActivePageBackoffice',
-        ]),
-    loadTextFromFile(ev) {
-      const file = ev.target.files[0];
-      const reader = new FileReader();
-      let self = this
-      reader.onload = function(e) { 
-        const datas = e.target.result
-        let json = JSON.parse(datas);
-        self.polyline.latlngs = [];
-        for (let i = 0; i < json.features.length; i++) {
+        ... mapActions([
+                    'setActivePageBackoffice',
+            ]),
+        loadTextFromFile(ev) {
+        const file = ev.target.files[0];
+        const reader = new FileReader();
+        let self = this
+        reader.onload = function(e) { 
+            const datas = e.target.result
+            let json = JSON.parse(datas);
+            self.polyline.latlngs = [];
+            for (let i = 0; i < json.features.length; i++) {
+                self.polyline.latlngs.push(
+                    [json.features[i].geometry.coordinates[1],json.features[i].geometry.coordinates[0]]
+                )
+            }
             self.polyline.latlngs.push(
-                [json.features[i].geometry.coordinates[1],json.features[i].geometry.coordinates[0]]
+                [json.features[0].geometry.coordinates[1],json.features[0].geometry.coordinates[0]]
+
             )
-        }
-        self.polyline.latlngs.push(
-            [json.features[0].geometry.coordinates[1],json.features[0].geometry.coordinates[0]]
+        };
+        reader.readAsText(file);
+        },
+       processFile(event) {
+            var files   = event.target.files[0];
+            if (files) {
+                if ( /\.(jpe?g|png|gif)$/i.test(files.name) && files.size < 1024 * 1024 ) {
+                    var reader = new FileReader();
+                    var image = document.getElementById('imgp');
+                    var preview = document.getElementById('preview');
+                    let self= this;
+                    var promise = new Promise(function(resolve, reject) {
+                        reader.addEventListener("load", function(){
+                            var test = new Image();
+                            test.src = this.result;
+                            test.onload = function () {
+                                var height = this.height;
+                                var width = this.width;
+                                if (height > 1080 || width > 1920) {
+                                    alert("La taille de l'image ne doit pas éxcéder 1920px x 1080px");
+                                }
+                                else{
+                                    image.setAttribute("src", test.src);
+                                    resolve(test.src);
+                                }
 
-        )
-      };
-      reader.readAsText(file);
-    },
-    processFile(event) {
-      let self=this
-      self.photos = event.target.files[0]
-    },
-    removechoice(choice){
-        this.locationsWalk =this.locationsWalk.filter(function(value, index, arr){
-              return value!=choice
-            });
-
-    },
-    readLocation(){
-      let self=this
-      var query =  db.ref('app/locations/').orderByKey();
-      query.once("value")
-      .then(function(snapshot) {
-          snapshot.forEach(function(childSnapshot) {
-              self.locations.push(childSnapshot.key);
-          });
-      });
-
-    },
-    readCategory(){
-        let self=this
-        var query =  db.ref('app/categories/').orderByKey();
-        query.once("value")
-        .then(function(snapshot) {
-            snapshot.forEach(function(childSnapshot) {
-                self.categories.push(childSnapshot.val());
-            });
-        });
-    },
-    checkFormAddWalk(){
-        const present = this.locationsWalk.filter((item) => item == this.choiceLocationAddWalk[0])
-        if(present.length===0){
-          this.locationsWalk.push(this.choiceLocationAddWalk[0])
-        } 
-        
-    },
-   
-    checkForm(e){
-        this.errors = [];
-
-        if (!this.nameWalk) {
-            this.errors.push("Nom de la balade obligatoire.");
-        }
-         if (!this.description) {
-            this.errors.push('Description obligatoire.');
-        } 
-         if (this.locationsWalk.length==0) {
-            this.errors.push('Lieux obligatoires.');
-        } 
-        if (this.polyline.latlngs.length==0) {
-            this.errors.push('Tracé obligatoire.');
-        } 
-        if (!this.duration) {
-            this.errors.push('Durée obligatoire.');
-        } 
-        if (!this.distance) {
-            this.errors.push('Distance obligatoire.');
-        } 
-        if (!this.errors.length) {
-             const self = this
-            if(this.photos.name){
-                if(this.nameWalk==this.walk.name){
-
-                    let uploadTask = storageRef.child('app/walks/images/'+this.photos.name).put(this.photos);
-                        uploadTask.on('state_changed', function(snapshot){
-                        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        uploader.value = progress;
-                        }, function(error) {
-                        }, function() {
-                        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-                            self.url=downloadURL;
-                            var postData = {
-                                name: self.nameWalk,
-                                description: self.description,
-                                locations:self.locationsWalk,
-                                gps: self.polyline.latlngs,
-                                photos:self.url,
-                                duration:self.duration,
-                                distance:self.distance
                             };
-                            var updates = {};
-                            updates[self.nameWalk] = postData;
-                            db.ref('app/walks').update(updates);
-                            self.setActivePageBackoffice('ListeBackoffice')
-                        });
-                    }); 
+                            
+                        }, true);
+                        reader.readAsDataURL(files);
+                    });
+                    promise.then(function(event) {
+                        self.photos=event;
+                    })  
                 }
                 else{
-                    db.ref('app/walks/'+this.walk.name).remove().then(() => {
-                        let uploadTask = storageRef.child('app/walks/images/'+this.photos.name).put(this.photos);
-                        uploadTask.on('state_changed', function(snapshot){
-                        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        uploader.value = progress;
-                        }, function(error) {
-                        }, function() {
-                        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-                            self.url=downloadURL;
-                            var postData = {
-                                name: self.nameWalk,
-                                description: self.description,
-                                locations:self.locationsWalk,
-                                gps: self.polyline.latlngs,
-                                photos:self.url,
-                                duration:self.duration,
-                                distance:self.distance
-                            };
-                            var updates = {};
-                            updates[self.nameWalk] = postData;
-                            db.ref('app/walks').update(updates);
-                            self.setActivePageBackoffice('ListeBackoffice')
-                        });
-                    }); 
-                    })
-                }
-            }else{
-
-                 if(this.nameWalk==this.walk.name){
-
-                    var postData = {
-                            name: self.nameWalk,
-                            description: self.description,
-                            locations:self.locationsWalk,
-                            gps: self.polyline.latlngs,
-                            photos:self.photos,
-                            duration:self.duration,
-                            distance:self.distance
-                    };
-                    var updates = {};
-                    updates[self.nameWalk] = postData;
-                    db.ref('app/walks').update(updates);
-                    self.setActivePageBackoffice('ListeBackoffice')
+                     alert("Mauvais format ou la taille du fichier est supérieur à 1 MB")
                  }
-                 else{
-                     db.ref('app/walks/'+this.walk.name).remove().then(() => {
-                         var postData = {
+            }
+            
+        }, 
+        removechoice(choice){
+            this.locationsWalk =this.locationsWalk.filter(function(value, index, arr){
+                return value!=choice
+            });
+        },
+        readLocation(){
+            let self=this
+            var query =  db.ref('app/locations/').orderByKey();
+            query.once("value").then(function(snapshot) {
+                snapshot.forEach(function(childSnapshot) {
+                    self.locations.push(childSnapshot.key);
+                });
+            });
+        },
+        readCategory(){
+            let self=this
+            var query =  db.ref('app/categories/').orderByKey();
+            query.once("value").then(function(snapshot) {
+                snapshot.forEach(function(childSnapshot) {
+                    self.categories.push(childSnapshot.val());
+                });
+            });
+        },
+        checkFormAddWalk(){
+            const present = this.locationsWalk.filter((item) => item == this.choiceLocationAddWalk[0])
+            if(present.length===0){
+                this.locationsWalk.push(this.choiceLocationAddWalk[0])
+            } 
+        },
+        checkForm(e){
+            this.errors = [];
+            if (!this.nameWalk) {
+                this.errors.push("Nom de la balade obligatoire.");
+            }
+            if (!this.description) {
+                this.errors.push('Description obligatoire.');
+            } 
+            if (this.locationsWalk.length==0) {
+                this.errors.push('Lieux obligatoires.');
+            } 
+            if (this.polyline.latlngs.length==0) {
+                this.errors.push('Tracé obligatoire.');
+            } 
+            if (!this.duration) {
+                this.errors.push('Durée obligatoire.');
+            } 
+            if (!this.distance) {
+                this.errors.push('Distance obligatoire.');
+            } 
+            if (!this.errors.length) {
+                const self = this
+                if(this.photos){
+                    if(this.nameWalk==this.walk.name){
+                        let date=new Date().toLocaleString()
+                        var postData = {
                             name: self.nameWalk,
                             description: self.description,
                             locations:self.locationsWalk,
                             gps: self.polyline.latlngs,
                             photos:self.photos,
                             duration:self.duration,
-                            distance:self.distance
+                            distance:self.distance,
+                            lastUpdate:date,
+                            id:self.id
                         };
                         var updates = {};
                         updates[self.nameWalk] = postData;
                         db.ref('app/walks').update(updates);
                         self.setActivePageBackoffice('ListeBackoffice')
-                     })
-                 }
+                    }
+                    else{
+                        db.ref('app/walks/'+this.walk.name).remove().then(() => {
+                            
+                            let date=new Date().toLocaleString()
+                            var postData = {
+                                name: self.nameWalk,
+                                description: self.description,
+                                locations:self.locationsWalk,
+                                gps: self.polyline.latlngs,
+                                photos:self.photos,
+                                duration:self.duration,
+                                distance:self.distance,
+                                lastUpdate:date,
+                                id:self.id
+                            };
+                            var updates = {};
+                            updates[self.nameWalk] = postData;
+                            db.ref('app/walks').update(updates);
+                            self.setActivePageBackoffice('ListeBackoffice')
+                        });
+                    }
+                }
+                else{
+                    if(this.nameWalk==this.walk.name){
+                        let date=new Date().toLocaleString()
+                        var postData = {
+                                name: self.nameWalk,
+                                description: self.description,
+                                locations:self.locationsWalk,
+                                gps: self.polyline.latlngs,
+                                photos:self.photos,
+                                duration:self.duration,
+                                distance:self.distance,
+                                lastUpdate:date,
+                                id:self.id
+                        };
+                        var updates = {};
+                        updates[self.nameWalk] = postData;
+                        db.ref('app/walks').update(updates);
+                        var data={
+                            walks : date
+                        }
+                        db.ref('app/lastUpdates').update(data);
+                        self.setActivePageBackoffice('ListeBackoffice')
+                    }
+                    else{
+                        db.ref('app/walks/'+this.walk.name).remove().then(() => {
+                            let date=new Date().toLocaleString()
+                            var postData = {
+                                name: self.nameWalk,
+                                description: self.description,
+                                locations:self.locationsWalk,
+                                gps: self.polyline.latlngs,
+                                photos:self.photos,
+                                duration:self.duration,
+                                distance:self.distance,
+                                lastUpdate:date,
+                                id:self.id
+                            };
+                            var updates = {};
+                            updates[self.nameWalk] = postData;
+                            db.ref('app/walks').update(updates);
+                            var data={
+                                walks : date
+                            }
+                            db.ref('app/lastUpdates').update(data);
+                            self.setActivePageBackoffice('ListeBackoffice')
+                        })
+                    }
+                }
             }
-
+            e.preventDefault();
         }
-        e.preventDefault();
-      }
     }
 }
 </script>

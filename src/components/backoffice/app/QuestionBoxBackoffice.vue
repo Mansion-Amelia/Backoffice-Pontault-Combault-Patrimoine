@@ -50,6 +50,11 @@ import { db } from '../../../config/db'
                 this.deleteBackofficeQuestion(this.question)
                  
                 db.ref('app/questions/'+name).remove();
+                let date=new Date().toLocaleString()
+                var data={
+                    walks : date
+                }
+                db.ref('app/lastUpdates').update(data);
             },
             readLocations() {
                 let self=this
