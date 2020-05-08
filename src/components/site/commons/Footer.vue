@@ -30,13 +30,16 @@
         <h2>Navigation</h2>
       </div>
       <div class="content">
-        <div class="footerNavigationOption">
+        <div @click="navigateTo('Terms')" class="footerNavigationOption">
           Mentions légales
         </div>
-        <div class="footerNavigationOption">
+         <div @click="navigateTo('News')" class="footerNavigationOption">
+         Notre actualité
+        </div>
+        <div @click="navigateTo('Review')" class="footerNavigationOption">
          Notre revue
         </div>
-        <div @click="goToAdministration" class="footerNavigationOption">
+        <div @click="navigateTo('BackofficeSelector')" class="footerNavigationOption">
           Administration
         </div>
       </div>
@@ -54,8 +57,8 @@ export default {
   components: {
   },
   methods: {
-    goToAdministration() {
-       this.$router.replace({ name: "BackofficeSelector" })
+    navigateTo(destination) {
+       this.$router.push({ name: destination }).catch(() => {})
     }
   }
 };
@@ -67,6 +70,7 @@ export default {
     background-color: var(--bluePontault);
     color: white;
     display:flex;
+    margin-top: 70px;
   }
 
   #appContainer .footerContainer h2 {

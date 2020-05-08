@@ -1,6 +1,6 @@
 <template>
   <div class="standartContainer BOSelector">
-    <NavBar></NavBar>
+    <NavBar from="BackofficeSelector"></NavBar>
     <h3>Que souhaitez-vous faire ?</h3>
     <div class="optionsSelector">
       <div @click="selectOption('app')" class="option">
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import NavBar from '../components/backoffice/commons/navBar'
+import NavBar from '../../components/commons/NavBar'
 export default {
   data() {
     return {
@@ -27,11 +27,14 @@ export default {
   methods: {
     selectOption(selectedOption){
       if(selectedOption === 'app') {
-        this.$router.replace({ name: "BackofficeApp" })
+        this.$router.push({ name: "BackofficeApp" })
+      }
+      else if(selectedOption === 'web') {
+        this.$router.push({ name: "BackofficeSite" })
       }
     },
     goToSite() {
-       this.$router.replace({ name: "home" });
+       this.$router.push({ name: "home" });
     }
   }
 };
@@ -69,5 +72,9 @@ export default {
 
   .BOSelector .backToSite {
     margin-top: 50px;
+  }
+
+  .BOSelector .navigationOptions {
+    margin-top:70px;
   }
 </style>

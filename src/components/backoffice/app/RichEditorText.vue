@@ -123,7 +123,7 @@
                     onUpdate: ({ getHTML }) => {
                         this.html = getHTML()
                         this.$parent.description = this.html;
-
+                        console.log(this.$parent)
                     },
                 }),
                 html: null,

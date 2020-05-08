@@ -6,9 +6,10 @@
       </div>
       <div class="links">
         <span @click="navigateTo('home')" class="bold">Accueil</span>
-        <span class="bold">Notre revue</span>
-        <span class="bold">Notre actualité</span>
-        <span class="bold">Espace adhérent</span>
+        <span @click="navigateTo('Review')" class="bold">Notre revue</span>
+        <span @click="navigateTo('News')" class="bold">Notre actualité</span>
+        <span class="bold">Notre application</span>
+        <span @click="navigateTo('espaceAdherent')" class="bold">Espace adhérent</span>
       </div>
     </div>
     <img src="https://upload.wikimedia.org/wikipedia/commons/5/54/20180301124354_IMG_4179And6more_Interior_3.jpg" alt="imgHeader">
@@ -25,7 +26,7 @@ export default {
   },
   methods: { 
     navigateTo(destination) {
-      this.$router.replace({ name: destination })
+      this.$router.push({ name: destination }).catch(() => {})
     }
   }
 };
@@ -37,6 +38,7 @@ export default {
     width: 100%;
     height: 500px;
     overflow: hidden;
+    margin-bottom:70px;
   }
 
   .navigation {
@@ -44,6 +46,10 @@ export default {
     position:absolute;
     top: 30px;
     display:flex;
+  }
+
+  .navigation .links span {
+    text-transform: uppercase;
   }
 
   .logo {

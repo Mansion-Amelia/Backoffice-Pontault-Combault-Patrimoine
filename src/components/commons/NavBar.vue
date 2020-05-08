@@ -4,7 +4,8 @@
       <div class="connectedAs">Connecté en tant que <span class="bold">{{ pseudo }}</span></div>
     </div>
     <div v-bind:class="[pseudo ? 'navigationOptions' : 'navigationOptions alone']">
-        <div class="editProfile link" @click="editProfile">Editer mon profil</div>
+        <div v-if="mode !== 'editProfile'" class="editProfile link" @click="editProfile">Editer mon profil</div>
+        <div v-if="mode === 'editProfile'" class="editProfile link" @click="back">Quitter mon profil</div>
         <div class="logout link" @click="logout">Déconnexion</div>
     </div>
   </div>
@@ -12,9 +13,9 @@
 
 <script>
 import firebase from "firebase";
-import userStore from "../../../store/userStore";
+import userStore from "../../store/userStore";
 export default {
-  props:['pseudo'],
+  props:['pseudo', 'from', 'mode'],
   data() {
     return {
     };
@@ -26,11 +27,14 @@ export default {
         .signOut()
         .then(() => {
           userStore.dispatch("fetchUser", null);
-          this.$router.replace({ name: "loginAdministration" })
+          this.$router.push({ name: this.from === 'BackOfficeSelector' ?  "loginAdministration" :  "loginAdherent"})
         });
     },
     editProfile(){
-
+      this.$router.push({ name: "editProfile", params: {from: this.from } } )
+    },
+    back() {
+      this.$router.push({ name: this.from ? this.from : 'espaceAdherent' })
     }
   }
 };
@@ -44,7 +48,7 @@ export default {
   .connectedAsContainer, .navigationOptions  {
     width:50%;
     display:flex;
-    margin: 80px 0px;
+    margin-bottom:50px;
   }
 
   .alone {

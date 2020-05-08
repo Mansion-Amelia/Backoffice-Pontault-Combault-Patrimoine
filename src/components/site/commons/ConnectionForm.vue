@@ -1,6 +1,6 @@
 <template>
   <div class="connectionFormContainer">
-    <div v-if="error" class="">{{error}}</div>
+    <div v-if="error" class="connectionError">{{error}}</div>
     <form action="#" @submit.prevent="submit">
       <div class="">
         <label for="email" class="">Adresse mail</label>
@@ -8,7 +8,6 @@
           <input
             id="email"
             type="email"
-            class="form-control"
             name="email"
             value
             required
@@ -24,7 +23,6 @@
           <input
             id="password"
             type="password"
-            class="form-control"
             name="password"
             required
             v-model="form.password"
@@ -34,6 +32,17 @@
       <div class="standartContainer">
         <button type="submit" class="submit">Se connecter</button>
       </div>
+      <div v-if="destination === 'espaceAdherent'" class="loginTools">
+        <div class="forgottenPass">
+          <div class="link">Mot de passe oublié ?</div>
+        </div>
+        <div class="signup">
+          <div @click="navigateTo('inscription')" class="link">S'inscrire</div>
+          <div class="signupInfo">
+            * Contactez l’association après inscription pour bénéficier du contenu réservé.
+          </div>
+        </div>
+      </div>
     </form>
   </div>
 </template>
@@ -42,6 +51,7 @@
 import firebase from "firebase"
 
 export default {
+  props:['destination'],
   data() {
     return {
       form: {
@@ -59,11 +69,14 @@ export default {
         .auth()
         .signInWithEmailAndPassword(this.form.email, this.form.password)
         .then(() => {
-          this.$router.replace({ name: "BackofficeSelector" });
+          this.$router.push({ name: this.destination });
         })
-        .catch(err => {
-          this.error = err.message;
+        .catch(() => {
+          this.error = 'Identifiant ou mot de passe incorrect.';
         });
+    },
+    navigateTo(destination) {
+      this.$router.push({ name: destination }).catch(() => {})
     }
   }
 };
@@ -72,37 +85,19 @@ export default {
 <style>
   .connectionFormContainer {
     display:flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 50px;
-  }
-  .connectionFormContainer label {
-      font-weight: bold;
-      margin:15px 0px;
   }
 
-  .connectionFormContainer input {
-    border:none;
-    background-color: #F1F1F1;
-    width:400px;
-    height:45px;
-  }
-
-  .connectionFormContainer input, .connectionFormContainer .submit{
-    border-radius: 10px;
-  }
-
-  .connectionFormContainer .submit {
-    border:none;
-    background-color: var(--darkbluePontault);
-    color:white;
-    padding: 10px 30px;
-    font-weight: bold;
+  .loginTools {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
     margin-top: 30px;
   }
 
-  .connectionFormContainer .submit:hover {
-    transform: scale(0.95);
-    cursor:pointer;
+  .connectionError {
+    color: rgb(189, 0, 0);
   }
 </style>

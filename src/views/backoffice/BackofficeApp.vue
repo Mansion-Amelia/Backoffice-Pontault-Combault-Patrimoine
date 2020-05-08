@@ -1,24 +1,24 @@
 <template>
   <div class="container containerBackoffice">
-    <div v-if="this.getActivePageBackoffice === 'ListeBackoffice'" @click="returnToSelection" class="backIcon" style="cursor: pointer;"><img src="../img/back-blue.svg" /> Retour </div>
+    <div v-if="this.getActivePageBackoffice === 'ListeBackoffice'" @click="returnToSelection" class="backIcon" style="cursor: pointer;"><img src="../../img/back-blue.svg" /> Retour </div>
     <component :is="this.getActivePageBackoffice"></component>
   </div>
 </template>
 
 <script>
 // RecentDocuments.vue
-import { db,storageRef } from '../config/db'
+import { db,storageRef } from '../../config/db'
 import {mapActions, mapGetters} from 'vuex'
 
-import FormDeleteLocation from '../components/backoffice/app/FormDeleteLocation'
-import FormAddLocation from '../components/backoffice/app/FormAddLocation'
-import FormChangeLocation from '../components/backoffice/app/FormChangeLocation'
-import FormChangeWalk from '../components/backoffice/app/FormChangeWalk'
-import FormAddWalk from '../components/backoffice/app/FormAddWalk'
-import FormDeleteWalk from '../components/backoffice/app/FormDeleteWalk'
-import ListeBackoffice from '../components/backoffice/app/ListeBackoffice'
-import FormAddQuestion from '../components/backoffice/app/FormAddQuestion'
-import FormChangeQuestion from '../components/backoffice/app/FormChangeQuestion'
+import FormDeleteLocation from '../../components/backoffice/app/FormDeleteLocation'
+import FormAddLocation from '../../components/backoffice/app/FormAddLocation'
+import FormChangeLocation from '../../components/backoffice/app/FormChangeLocation'
+import FormChangeWalk from '../../components/backoffice/app/FormChangeWalk'
+import FormAddWalk from '../../components/backoffice/app/FormAddWalk'
+import FormDeleteWalk from '../../components/backoffice/app/FormDeleteWalk'
+import ListeBackoffice from '../../components/backoffice/app/ListeBackoffice'
+import FormAddQuestion from '../../components/backoffice/app/FormAddQuestion'
+import FormChangeQuestion from '../../components/backoffice/app/FormChangeQuestion'
 
     export default {
   name: "Backoffice",
@@ -48,7 +48,7 @@ import FormChangeQuestion from '../components/backoffice/app/FormChangeQuestion'
                 'setActivePageBackoffice',
         ]),
         returnToSelection() {
-          this.$router.replace({ name: "BackofficeSelector" })
+          this.$router.push({ name: "BackofficeSelector" })
         }
   
   },
