@@ -8,7 +8,7 @@
         <span @click="navigateTo('home')" class="bold">Accueil</span>
         <span @click="navigateTo('Review')" class="bold">Notre revue</span>
         <span @click="navigateTo('News')" class="bold">Notre actualité</span>
-        <span class="bold">Notre application</span>
+        <span @click="openApp()" class="bold">Notre application</span>
         <span @click="navigateTo('espaceAdherent')" class="bold">Espace adhérent</span>
       </div>
     </div>
@@ -27,6 +27,9 @@ export default {
   methods: { 
     navigateTo(destination) {
       this.$router.push({ name: destination }).catch(() => {})
+    },
+     openApp(){
+      window.open('https://app.pontault-combault-patrimoine.fr/', '_blank');
     }
   }
 };

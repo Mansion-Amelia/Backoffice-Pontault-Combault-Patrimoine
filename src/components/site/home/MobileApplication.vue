@@ -7,7 +7,10 @@
         <div class="subtitle">{{mobileapp.subtitle}}</div>
         <div v-html="mobileapp.content" class="content"></div>
         <div class="standartContainer">
-           <button type="submit" class="submit">S'y rendre</button>
+           <button class="submit" @click="openApp()">S'y rendre</button>
+           <div class="mobileAppContentContainerInfos">
+             L'application est uniquement accessible depuis un smartphone.
+           </div>
         </div>
       </div>
       <div class="preview">
@@ -28,6 +31,9 @@ export default {
   components: {
   },
   methods: {
+    openApp(){
+      window.open('https://app.pontault-combault-patrimoine.fr/', '_blank');
+    }
   },
   created() {
     db.ref('site/contents/home/mobileapp').once('value').then((snapshot) => {
@@ -64,6 +70,11 @@ export default {
 
 .mobileApplicationContainer .standartContainer {
   height:auto;
+  flex-direction: column;
+}
+
+.mobileApplicationContainer .mobileAppContentContainerInfos{
+  font-size:12px;
 }
 
 
