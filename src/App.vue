@@ -94,32 +94,32 @@ export default {
 
     /* FORM */
     
-    form {
+    .CRHandlerContainer form {
         width:400px;
     }
     .signupInfo {
         font-size:10px;
     }
-    label {
+    .CRHandlerContainer label {
         font-weight: bold;
         margin:15px 0px;
     }
 
-    input[type=text],input[type=email],input[type=password], textarea {
+    .CRHandlerContainer input[type=text],input[type=email],input[type=password], textarea {
         border:none;
         background-color: #F1F1F1;
         width:400px;
         padding:5px 10px;;
     }
-    input[type=text],input[type=email],input[type=password] {
+     .CRHandlerContainer input[type=text],input[type=email],input[type=password] {
         height:45px;
     }
 
-    textarea {
+     .CRHandlerContainer textarea {
         height: 300px;
     }
 
-    input, .submit{
+     .CRHandlerContainer input, .submit{
         border-radius: 10px;
     }
 
