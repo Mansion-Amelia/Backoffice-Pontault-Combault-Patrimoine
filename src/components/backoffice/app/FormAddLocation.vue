@@ -183,6 +183,9 @@ export default {
             if (!this.latitudeLocation) {
                 this.errors.push('Latitude obligatoire.');
             } 
+            if (!this.photos) {
+                this.errors.push('Image obligatoire.');
+            } 
 
             if (!this.longitudeLocation) {
                 this.errors.push('Longitude obligatoire.');
