@@ -86,7 +86,7 @@ export default {
           addressLocation: null,
           categoryLocation: null,
           description: null,
-          photos:{},
+          photos:null,
           categories: [],
           url: null,
           latitudeLocation: null,

@@ -103,7 +103,7 @@ export default {
       distance:null,
       categories: [],
       locations: [],
-      photos:{},
+      photos:null,
       choiceLocationAddWalk: [],
       locationsWalk: [],
       coord: null,
