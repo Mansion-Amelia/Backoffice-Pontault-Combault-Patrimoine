@@ -95,7 +95,7 @@ import { db } from '../../../config/db'
     padding-right: 0.3em;
 }
 
-.baladeDistance img, .baladeDuration img, .delete img, .modif img {
+.baladeDistance img, .baladeDuration img, .baladeBox .delete img, .modif img {
     height: 1.5em;
 }
 
