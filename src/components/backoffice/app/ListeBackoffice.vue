@@ -158,4 +158,13 @@
     .containerBackoffice h1 {
         margin-left : 1em;
     }
+
+    .containerBackoffice .btn-primary {
+        background-color: #5b9bd5;
+        border: none;
+    }
+     .containerBackoffice .btn-primary:active,  .containerBackoffice .btn-primary:focus,  .containerBackoffice .btn-primary:hover,  .containerBackoffice .btn-primary:active, .containerBackoffice .btn-primary:not(:disabled):not(.disabled):active {
+        background-color: #42719a;
+        border: none;
+    }
 </style>
