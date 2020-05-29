@@ -98,6 +98,9 @@ import { db } from '../../../config/db'
 .baladeDistance img, .baladeDuration img, .baladeBox .delete img, .modif img {
     height: 1.5em;
 }
+.baladeBox .delete img:hover {
+    transform: inherit;
+}
 
 .duration, .km {
     line-height: 1em;
