@@ -54,6 +54,7 @@
                 </div>
             </div>
             <div class="form-group">
+                <label for="addressLocation">Description</label>
                 <RichEditorText :description="description"></RichEditorText>
             </div>
 
