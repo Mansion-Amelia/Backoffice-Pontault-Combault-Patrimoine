@@ -13,7 +13,7 @@
                         <div class="baladeDuration d-flex">
                         </div>
                          <div @click="setActivePageBackoffice('FormChangeLocation'), setBackofficeLocation(location)"  class="modif" style="cursor: pointer;"><img src="../../../img/pen.svg" /></div>
-                        <div @click="removeLocationCarnet(location.name)" class="delete" style="cursor: pointer;"><img src="../../../img/garbage-blue.svg" /></div>
+                        <div @click="removeLocationCarnet(location.name)" class="delete2" style="cursor: pointer;"><img src="../../../img/garbage-blue.svg" /></div>
                     </div>
                 </div>
             </div>

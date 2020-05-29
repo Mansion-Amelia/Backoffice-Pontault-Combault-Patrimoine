@@ -17,7 +17,7 @@
                             <div class="align-self-end duration">{{ walk.duration}}</div>
                         </div>
                         <div class="modif" style="cursor: pointer;" @click="setActivePageBackoffice('FormChangeWalk'), setBackofficeWalk(walk)"><img src="../../../img/pen.svg" /></div>
-                        <div class="delete" style="cursor: pointer;" @click="removeWalkCarnet(walk.name)" ><img src="../../../img/garbage-blue.svg" /></div>
+                        <div class="delete2" style="cursor: pointer;" @click="removeWalkCarnet(walk.name)" ><img src="../../../img/garbage-blue.svg" /></div>
                     </div>
                 </div>
             </div>
@@ -95,12 +95,9 @@ import { db } from '../../../config/db'
     padding-right: 0.3em;
 }
 
-.baladeDistance img, .baladeDuration img, .baladeBox .delete img, .modif img {
-    height: 1.5em;
-}
-.baladeBox .delete img:hover {
-    transform: inherit;
-}
+    .baladeDistance img, .baladeDuration img, .baladeBox .delete2 img, .modif img {
+        height: 1.5em;
+    }
 
 .duration, .km {
     line-height: 1em;
