@@ -13,6 +13,7 @@ import AddReview from '../views/backoffice/AddReview'
 import AddNews from '../views/backoffice/AddNews'
 import EditNews from '../views/backoffice/EditNews'
 import EditTerms from '../views/backoffice/EditTerms'
+import EditLink from '../views/backoffice/EditLink'
 
 import Home from '../views/site/Home'
 import LoginAdhérent from '../views/site/LoginAdherent'
@@ -102,6 +103,13 @@ const router = new Router({
       path: '/backoffice/site/editionContenu',
       name: 'EditContent',
       component: EditContent,
+      meta: { requiresAdminAuth: true },
+      props: true
+    },
+    {
+      path: '/backoffice/site/editionLien',
+      name: 'EditLink',
+      component: EditLink,
       meta: { requiresAdminAuth: true },
       props: true
     },

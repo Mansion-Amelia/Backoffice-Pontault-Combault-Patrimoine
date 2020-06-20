@@ -20,6 +20,12 @@
       </div>
     </div>
     <div v-if=" type === 'terms'" class="link" @click="navigateTo('EditTerms')">Mentions légales</div>
+    <div v-if=" type === 'links'">
+        <div class="editableLinks" >
+          <div class="link" @click="navigateTo('EditLink')">{{ content.fileName }}</div> <div v-if="content.type !== 'adhesionWeb'" class="link" @click="download()">consulter</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -66,7 +72,7 @@ export default {
           this.deleted = true
         }
       })
-    }
+    },
   },
   computed: {
     uploadDate() {
@@ -86,5 +92,10 @@ export default {
 }
 .reviewEditorContainer .delete {
  width:10%;
+}
+
+.editableLinks {
+display:flex;
+justify-content: space-between
 }
 </style>

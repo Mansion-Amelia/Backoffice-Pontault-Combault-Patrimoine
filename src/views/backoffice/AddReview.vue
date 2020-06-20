@@ -31,7 +31,7 @@
           </div>
         </div>
         <div>
-          <label for="file">Selection de la miniature (400 x 300) *</label>
+          <label for="file">Selection de la miniature (300 x 300) *</label>
           <div>
             <input
               id="thumb"

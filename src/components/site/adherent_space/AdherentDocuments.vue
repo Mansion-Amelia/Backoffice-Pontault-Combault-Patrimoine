@@ -1,6 +1,7 @@
 <template>
   <div class="adherentDocumentsContainer">
     <div class="bold">Documents disponibles</div>
+    <div class="link calendar" @click="openCalendar()">Consulter le calendrier de l'association</div>
     <div class="adherentDocuments">
       <div class="backOfficeSiteMenu">
         <div @click="updateSelectedTab('CR')" :class="selectedTab === 'CR' ? 'selectedChoice link' : 'choice link'">Compte rendu de réunion</div>
@@ -24,7 +25,8 @@ export default {
   data() {
     return {
       selectedTab: "CR",
-      documents: {}
+      documents: {},
+      calendarFile: null
     };
   },
   components: {
@@ -33,11 +35,17 @@ export default {
   methods: {
     updateSelectedTab(selectedTab) {
       this.selectedTab = selectedTab
+    },
+    openCalendar(){
+       window.open(this.calendarFile, '_blank');
     }
   },
   created() {
     db.ref('site/documents/').once('value').then((snapshot) => {
       this.documents = snapshot.val() ? snapshot.val() : {}
+    });
+    db.ref('/site/contents/links/status').once('value').then((snapshot) => {
+      this.calendarFile = snapshot.val() ? snapshot.val().file : null
     });
 
   }
@@ -54,5 +62,8 @@ export default {
   }
   .adherentDocuments {
     width: auto;
+  }
+  .calendar {
+    margin-bottom: 20px;
   }
 </style>

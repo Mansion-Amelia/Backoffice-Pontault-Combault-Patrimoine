@@ -4,6 +4,7 @@
     <ContentsSection title="Mentions légales" type="terms" :contents="contents['terms']"></ContentsSection>
     <ContentsSection title="Revue" type="reviews" :contents="contents['reviews']"></ContentsSection>
     <ContentsSection title="Actualité" type="news" :contents="contents['news']"></ContentsSection>
+    <ContentsSection title="Liens éditables" type="links" :contents="contents['links']"></ContentsSection>
   </div>
 </template>
 

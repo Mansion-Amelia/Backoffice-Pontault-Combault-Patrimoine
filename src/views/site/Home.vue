@@ -1,6 +1,6 @@
 <template>
   <div class="homeContainer">
-    <Header title="Accueil" isFullPage="true"></Header>
+    <Header title="Association pour la protection du patrimoine de Pontault-Combault"></Header>
     <div class="pageContainer">
       <UsefullLinks v-vpshow="'left'"></UsefullLinks>
       <WhoAreWe v-vpshow="'right'"></WhoAreWe>

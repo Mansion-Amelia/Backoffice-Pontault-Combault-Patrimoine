@@ -109,17 +109,28 @@ export default {
         border:none;
         background-color: #F1F1F1;
         width:400px;
-        padding:5px 10px;;
+        padding:5px 10px;
     }
      .CRHandlerContainer input[type=text],input[type=email],input[type=password] {
         height:45px;
+    }
+
+    .standartContainer input[type=text] {
+        height:45px;
+    }
+
+    .standartContainer input[type=text] {
+        border:none;
+        background-color: #F1F1F1;
+        width:400px;
+        padding:5px 10px;;
     }
 
      .CRHandlerContainer textarea {
         height: 300px;
     }
 
-     .CRHandlerContainer input, .submit{
+    .CRHandlerContainer input, .submit, .standartContainer input, .connectionFormContainer input{
         border-radius: 10px;
     }
 

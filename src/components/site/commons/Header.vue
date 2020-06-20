@@ -12,8 +12,8 @@
         <span @click="navigateTo('espaceAdherent')" class="bold">Espace adhérent</span>
       </div>
     </div>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/5/54/20180301124354_IMG_4179And6more_Interior_3.jpg" alt="imgHeader">
-    <h1>{{title}}</h1>
+    <img src="https://images.pexels.com/photos/912110/pexels-photo-912110.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="imgHeader">
+    <h1 class="headerTitle">{{title}}</h1>
   </div>
 </template>
 
@@ -39,7 +39,7 @@ export default {
   .headerContainer{
     position: relative;
     width: 100%;
-    height: 500px;
+    height: 700px;
     overflow: hidden;
     margin-bottom:70px;
   }
@@ -66,6 +66,7 @@ export default {
   .links span {
     margin-right: 25px;
     color:white;
+    text-shadow:1px 1px 10px rgb(32, 32, 32);
   }
 
   .links span:hover {
@@ -82,6 +83,7 @@ export default {
     display:flex;
     justify-content: flex-end;
     align-items: center;
+    text-align: center;
   }
 
   .headerContainer img{
@@ -105,5 +107,10 @@ export default {
   }
   .full {
     height: 100vh;
+  }
+
+  .headerTitle {
+    text-align: center;
+    text-shadow:1px 1px 10px rgb(32, 32, 32);
   }
 </style>

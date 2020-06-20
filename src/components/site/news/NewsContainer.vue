@@ -3,12 +3,12 @@
     <div class="newsContainer">
       <div class="newsThumb">
         <img :src="'data:image/jpeg;base64,'+news.thumb" alt="newsThumb"/>
-        <div class="newsDate">
-          {{uploadDate}}
-        </div>
       </div>
       <div class="newsDetails">
         <div class="newsTitle">{{news.newsName}}</div>
+        <div class="newsDate">
+          {{uploadDate}}
+        </div>
         <div class="newsContent">{{news.content}}</div>
         <div class="newsLinks">
           <div class="newsLink" v-for="(file, index) in news.files"
@@ -61,9 +61,11 @@ export default {
 
 .newsContainer {
   display:flex;
+  width:100%
 }
 .newsDate {
-  text-align: center;
+  margin-bottom: 15px;
+  font-size:13px;
 }
 .newsThumb {
   margin: 0px 30px;
@@ -78,7 +80,7 @@ export default {
 .newsTitle {
   font-weight: bold;
   color: var(--bluePontault);
-  margin-bottom: 15px;
+  
 }
 .newsContent {
   margin-bottom: 25px;

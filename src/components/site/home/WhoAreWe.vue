@@ -3,12 +3,14 @@
     <h2>{{whoarewe.title}}</h2>
     <div class="videoContainer">
       <iframe 
+        v-if="whoarewe.video"
         width="560" 
         height="315" 
         :src="whoarewe.video" 
         frameborder="0" 
         allowfullscreen>
       </iframe>
+      <img class="imgWhoAreWe" v-if="!whoarewe.video" src="../../../img/site/whoarewe.jpg" alt="imgWhoAreWe">
     </div>
     <div class="contentContainer">
       <h3>{{whoarewe.subtitle}}</h3>
@@ -49,5 +51,8 @@ export default {
 .content {
   text-align: justify;
   text-align-last: left;
+}
+.imgWhoAreWe {
+  width:700px;
 }
 </style>

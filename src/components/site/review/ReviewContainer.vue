@@ -1,12 +1,12 @@
 <template>
   <div @click="openReview" class="reviewContainer link">
     <div class="reviewInfos">
-      <div class="reviewNumber">
+      <!--<div class="reviewNumber">
         {{reviewNumber}}
       </div>
       <div class="reviewTitle">
         Le saviez-vous ?
-      </div>
+      </div>-->
       <div class="reviewSubtitle">
        {{reviewName}}
       </div>
@@ -44,7 +44,7 @@ export default {
   }
   .reviewInfos{
     height: 100px;
-    width: 400px;;
+    width: 300px;;
     background-color: var(--darkbluePontault);
     position:relative;
     color:white;
@@ -75,7 +75,7 @@ export default {
   }
   .reviewThumb img {
     height: 300px;
-    width: 400px;
+    width: 300px;
   }
 
 </style>
